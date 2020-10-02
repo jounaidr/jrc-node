@@ -1,15 +1,28 @@
 package com.jounaidr.jrc.node.blockchain;
 
-
 import com.jounaidr.jrc.node.crypto.CryptoHashHelper;
 
 import java.time.Instant;
 
 public class Block {
+    private static final String GENESIS_PREVIOUS_HASH = "dummyhash";
+    private static final String GENESIS_DATA = "dummydata";
+    private static final String GENESIS_TIME_STAMP = "1";
+
     private String hash;
     private String previousHash;
     private String data;
     private String timeStamp;
+
+    public Block genesis(){
+        this.setPreviousHash(GENESIS_PREVIOUS_HASH);
+        this.setData(GENESIS_DATA);
+        this.setTimeStamp(GENESIS_TIME_STAMP);
+
+        this.setHash(this.generateHash());
+
+        return this;
+    }
 
     public Block mineBlock(Block previousBlock, String data){
         Instant ts = Instant.now();
@@ -30,7 +43,7 @@ public class Block {
         return cryptoHashHelper.returnHash();
     }
 
-    private String getHash() {
+    public String getHash() {
         return hash;
     }
 
@@ -38,7 +51,7 @@ public class Block {
         this.hash = hash;
     }
 
-    private String getPreviousHash() {
+    public String getPreviousHash() {
         return previousHash;
     }
 
@@ -46,7 +59,7 @@ public class Block {
         this.previousHash = previousHash;
     }
 
-    private String getData() {
+    public String getData() {
         return data;
     }
 
@@ -54,7 +67,7 @@ public class Block {
         this.data = data;
     }
 
-    private String getTimeStamp() {
+    public String getTimeStamp() {
         return timeStamp;
     }
 
