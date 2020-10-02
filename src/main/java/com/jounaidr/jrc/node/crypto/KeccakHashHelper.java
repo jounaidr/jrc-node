@@ -5,10 +5,10 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.nio.charset.StandardCharsets;
 
-public class CryptoHashHelper {
+public class KeccakHashHelper {
     private String message;
 
-    public CryptoHashHelper(String message) {
+    public KeccakHashHelper(String message) {
         this.message = message;
     }
 

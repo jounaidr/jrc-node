@@ -1,6 +1,6 @@
 package com.jounaidr.jrc.node.blockchain;
 
-import com.jounaidr.jrc.node.crypto.CryptoHashHelper;
+import com.jounaidr.jrc.node.crypto.KeccakHashHelper;
 
 import java.time.Instant;
 
@@ -38,9 +38,9 @@ public class Block {
 
     private String generateHash(){
         String message = previousHash + data + timeStamp;
-        CryptoHashHelper cryptoHashHelper = new CryptoHashHelper(message);
+        KeccakHashHelper keccakHashHelper = new KeccakHashHelper(message);
 
-        return cryptoHashHelper.returnHash();
+        return keccakHashHelper.returnHash();
     }
 
     public String getHash() {
