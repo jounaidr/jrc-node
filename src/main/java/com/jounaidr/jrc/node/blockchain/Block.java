@@ -1,6 +1,8 @@
 package com.jounaidr.jrc.node.blockchain;
 
 
+import com.jounaidr.jrc.node.crypto.CryptoHashHelper;
+
 import java.time.Instant;
 
 public class Block {
@@ -16,38 +18,47 @@ public class Block {
         this.setData(data);
         this.setTimeStamp(ts.toString());
 
+        this.setHash(this.generateHash());
+
         return this;
     }
 
-    public String getHash() {
+    private String generateHash(){
+        String message = previousHash + data + timeStamp;
+        CryptoHashHelper cryptoHashHelper = new CryptoHashHelper(message);
+
+        return cryptoHashHelper.returnHash();
+    }
+
+    private String getHash() {
         return hash;
     }
 
-    public void setHash(String hash) {
+    private void setHash(String hash) {
         this.hash = hash;
     }
 
-    public String getPreviousHash() {
+    private String getPreviousHash() {
         return previousHash;
     }
 
-    public void setPreviousHash(String previousHash) {
+    private void setPreviousHash(String previousHash) {
         this.previousHash = previousHash;
     }
 
-    public String getData() {
+    private String getData() {
         return data;
     }
 
-    public void setData(String data) {
+    private void setData(String data) {
         this.data = data;
     }
 
-    public String getTimeStamp() {
+    private String getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(String timeStamp) {
+    private void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
 }
