@@ -8,8 +8,8 @@ algorithm, and developed using the Java Spring framework.
 * [Installation](#installation)
 * [Features](#features)
     - [Genesis](#genesis)
-    - [Block Hashing](#block%20hashing)
-    - [Proof Of Work](#proof%20of%20work)
+    - [Block Hashing](#block&#32;hashing)
+    - [Proof Of Work](#proof&#32;of&#32;work)
 * [License](#license)
 
 ---
