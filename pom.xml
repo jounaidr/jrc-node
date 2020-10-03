@@ -21,6 +21,7 @@
 	<dependencies>
 		<!-- SYSTEM -->
 
+		<!-- crypto -->
 		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
@@ -28,7 +29,7 @@
 			<version>1.66</version>
 		</dependency>
 
-		<!-- SPRING -->
+		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -47,6 +48,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
+		</dependency>
+
+		<!-- logging -->
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.30</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -75,7 +84,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<!-- junit 5 -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>

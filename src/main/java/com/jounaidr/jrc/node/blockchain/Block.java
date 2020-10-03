@@ -3,7 +3,7 @@ package com.jounaidr.jrc.node.blockchain;
 import com.jounaidr.jrc.node.crypto.KeccakHashHelper;
 
 import java.time.Instant;
-
+//TODO: implement slf4j logging after blockchain has been fully implemented
 public class Block {
     private static final String GENESIS_PREVIOUS_HASH = "dummyhash";
     private static final String GENESIS_DATA = "dummydata";
