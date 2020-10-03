@@ -10,10 +10,23 @@ import java.nio.charset.StandardCharsets;
 public class KeccakHashHelper {
     private String message;
 
+    /**
+     * Instantiates a new Keccak hash helper.
+     *
+     * @param message String to be hashed
+     */
     public KeccakHashHelper(String message) {
         this.message = message;
     }
 
+    /**
+     * Implementation of Keccak-256 hashing algorithm
+     * provided by the Bouncy Castle Library, based on
+     * https://www.baeldung.com/sha-256-hashing-java
+     * section 6.3
+     *
+     * @return the hashed message string in lowercase hex format
+     */
     public String returnHash(){
         log.debug("Attempting to hash the following message: {} ...", this.message);
 
