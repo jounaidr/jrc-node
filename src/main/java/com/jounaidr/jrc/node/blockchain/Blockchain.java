@@ -19,7 +19,7 @@ public class Blockchain {
         this.chain.add(nextBlock);
     }
 
-    public Block getBlock(int index){
-        return this.chain.get(index);
+    public List<Block> getChain(){
+        return this.chain;
     }
 }
