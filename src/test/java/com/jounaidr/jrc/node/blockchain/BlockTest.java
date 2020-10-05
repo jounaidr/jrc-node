@@ -3,6 +3,8 @@ package com.jounaidr.jrc.node.blockchain;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import com.jparams.verifier.tostring.NameStyle;
+import com.jparams.verifier.tostring.ToStringVerifier;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.meanbean.test.BeanTester;
@@ -15,6 +17,11 @@ class BlockTest {
     public void testPOJOWithMeanBean(){
         BeanTester tester = new BeanTester();
         tester.testBean(Block.class);
+    }
+
+    @Test //Test ensures any new variables added to Block will be added to toString method
+    public void testToString(){
+        ToStringVerifier.forClass(Block.class).withClassName(NameStyle.SIMPLE_NAME).verify();
     }
 
     @Test //Test that a block has all the correct genesis data when .genesis() method is called

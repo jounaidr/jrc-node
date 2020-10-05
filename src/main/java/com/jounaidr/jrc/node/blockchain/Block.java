@@ -58,6 +58,22 @@ public class Block {
         return keccakHashHelper.returnHash();
     }
 
+    /**
+     * toString method auto-generated with intellij
+     * tested using https://github.com/jparams/to-string-verifier
+     *
+     * @return String containing block information
+     */
+    @Override
+    public String toString() {
+        return "Block{" +
+                "hash='" + hash + '\'' +
+                ", previousHash='" + previousHash + '\'' +
+                ", data='" + data + '\'' +
+                ", timeStamp='" + timeStamp + '\'' +
+                '}';
+    }
+
     public String getHash() {
         return hash;
     }

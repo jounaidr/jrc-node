@@ -72,6 +72,12 @@
 			<version>2.0.3</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://github.com/jparams/to-string-verifier -->
+		<dependency>
+			<groupId>com.jparams</groupId>
+			<artifactId>to-string-verifier</artifactId>
+			<version>1.4.8</version>
+		</dependency>
 		<!-- exclude junit 4 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
