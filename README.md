@@ -10,6 +10,7 @@ algorithm, and developed using the Java Spring framework.
     - [Genesis](#genesis)
     - [Block Hashing](#block-hashing)
     - [Proof Of Work](#proof-of-work)
+    - [Proof Of Work](#proof-of-work)
 * [License](#license)
 
 ---
@@ -21,7 +22,7 @@ Installation will be done through RPM on RHEL/Centos servers (currently unimplem
 ## Features
 
 ### Genesis
-The genesis block is currently generated based on the following parameters (which is hardcoded in [block.java](https://github.com/jounaidr/jrc-node/blob/master/src/main/java/com/jounaidr/jrc/node/blockchain/Block.java)):
+The genesis block is currently generated based on the following parameters (which is hardcoded in [Block.java](https://github.com/jounaidr/jrc-node/blob/master/src/main/java/com/jounaidr/jrc/node/blockchain/Block.java)):
 ```java
 private static final String GENESIS_PREVIOUS_HASH = "dummyhash";
 private static final String GENESIS_DATA = "dummydata";
@@ -36,6 +37,35 @@ This implementation uses the [Bouncy Castle Api](https://www.bouncycastle.org/).
 
 ### Proof Of Work
 jrc will implement the Cryptonight proof of work algorithm.
+
+### Chain Validation/Replacement
+In order to validate incoming chains, [Blockchain.java](https://github.com/jounaidr/jrc-node/blob/master/src/main/java/com/jounaidr/jrc/node/blockchain/Blockchain.java)
+uses the following method:
+```java
+public boolean isChainValid(){
+    if(this.chain.get(0).toString() != new Block().genesis().toString()){
+        return false; //Verify first block in chain is genesis block
+    }
+
+    for(int i=1; i < this.chain.size(); i++){
+        if(this.chain.get(i).getPreviousHash() != this.chain.get(i-1).getHash()){
+            return false; //Verify each block in the chain references previous hash value correctly
+        }
+    }
+    return true;
+}
+```
+
+Chain replacement implements [ReentrantReadWriteLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantReadWriteLock.html) 
+for concurrency:
+```java
+writeLock.lock();
+try {
+    this.chain = newChain;
+} finally {
+    writeLock.unlock();
+}
+```
 
 ---
 
