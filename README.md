@@ -10,7 +10,7 @@ algorithm, and developed using the Java Spring framework.
     - [Genesis](#genesis)
     - [Block Hashing](#block-hashing)
     - [Proof Of Work](#proof-of-work)
-    - [Proof Of Work](#proof-of-work)
+    - [Chain Validation/Replacement](#chain-validationreplacement)
 * [License](#license)
 
 ---
