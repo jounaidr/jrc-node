@@ -12,15 +12,16 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @Slf4j
 @Service
 public class Blockchain {
-    private static List<Block> chain = new ArrayList<>();
+    private static List<Block> chain;
     private ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     /**
-     * Instantiates a new Blockchain with a
+     * Instantiates the Blockchain with a
      * genesis block at the start of the chain
      */
     public Blockchain() {
         log.debug("Initiating blockchain with genesis block...");
+        this.chain = new ArrayList<>();
         this.chain.add(new Block().genesis());
     }
 
@@ -70,7 +71,7 @@ public class Blockchain {
      * @return if the chain is valid
      */
     public boolean isChainValid(){
-        if(this.chain.get(0).toString() != new Block().genesis().toString()){
+        if(!(this.chain.get(0).toString()).equals(new Block().genesis().toString())){
             log.error("Chain is invalid, first block in the chain is not genesis block...");
             return false; //Verify first block in chain is genesis block
         }
