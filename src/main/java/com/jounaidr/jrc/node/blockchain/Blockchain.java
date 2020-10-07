@@ -1,27 +1,25 @@
 package com.jounaidr.jrc.node.blockchain;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Slf4j
-@Service
 public class Blockchain {
-    private static List<Block> chain;
+    private List<Block> chain;
     private ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     /**
      * Instantiates the Blockchain with a
      * genesis block at the start of the chain
      */
-    public Blockchain() {
+    public Blockchain(List<Block> chain) {
         log.debug("Initiating blockchain with genesis block...");
-        this.chain = new ArrayList<>();
+
+        this.chain = chain;
         this.chain.add(new Block().genesis());
     }
 
@@ -76,8 +74,8 @@ public class Blockchain {
             return false; //Verify first block in chain is genesis block
         }
 
-        for(int i=1; i < this.chain.size(); i++){
-            if(this.chain.get(i).getPreviousHash() != this.chain.get(i-1).getHash()){
+         for(int i=1; i < this.chain.size(); i++){
+            if(!(this.chain.get(i).getPreviousHash()).equals(this.chain.get(i-1).getHash())){
                 log.error("Chain is invalid, the {}th block in the chain has previousHash value {}, however the hash of the previous block is {}...",i,this.chain.get(i).getPreviousHash(),this.chain.get(i-1).getHash());
                 return false; //Verify each block in the chain references previous hash value correctly
             }

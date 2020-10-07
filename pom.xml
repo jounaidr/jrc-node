@@ -77,6 +77,7 @@
 			<groupId>com.jparams</groupId>
 			<artifactId>to-string-verifier</artifactId>
 			<version>1.4.8</version>
+			<scope>test</scope>
 		</dependency>
 		<!-- exclude junit 4 -->
 		<dependency>

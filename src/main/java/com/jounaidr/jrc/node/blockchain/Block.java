@@ -75,7 +75,7 @@ public class Block {
     }
 
     public String getHash() {
-        return hash;
+        return this.generateHash(); // Rehash block everytime block hash is needed
     }
 
     private void setHash(String hash) {
