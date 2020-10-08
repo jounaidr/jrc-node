@@ -80,6 +80,9 @@ The default project branch is set to [develop](https://github.com/jounaidr/jrc-n
 The [master](https://github.com/jounaidr/jrc-node/tree/master) branch is currently locked and will only be unlocked at commit to after each
 major slice of the project is complete. 
 
+### Project/Issue Tracking
+To track the tickets I am currently working on I am using [GitHub projects](https://github.com/users/jounaidr/projects/1).
+
 ---
 
 ## License
