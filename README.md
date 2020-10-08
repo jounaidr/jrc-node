@@ -11,6 +11,9 @@ algorithm, and developed using the Java Spring framework.
     - [Block Hashing](#block-hashing)
     - [Proof Of Work](#proof-of-work)
     - [Chain Validation/Replacement](#chain-validationreplacement)
+* [DevOps](#devops)
+    - [CI Testing](#ci-testing)
+    - [Version Control](#version-control)
 * [License](#license)
 
 ---
@@ -66,6 +69,16 @@ try {
     writeLock.unlock();
 }
 ```
+
+## DevOps
+### CI Testing
+For my CI pipeline I am currently using [Circleci](https://circleci.com/) to execute my [test suite](https://github.com/jounaidr/jrc-node/tree/master/src/test/java/com/jounaidr/jrc/node) on each commit.
+I might switch to using a Jenkins based pipeline later on in development depending on resources.
+
+### Version Control
+The default project branch is set to [develop](https://github.com/jounaidr/jrc-node), for which I will commit to during development.
+The [master](https://github.com/jounaidr/jrc-node/tree/master) branch is currently locked and will only be unlocked at commit to after each
+major slice of the project is complete. 
 
 ---
 
