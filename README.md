@@ -34,7 +34,7 @@ private static final String GENESIS_TIME_STAMP = "1";
 Note: this data will be changed upon deployment
 
 ### Block Hashing
-Each block's hash is generated using the [Keccak-256](https://keccak.team/keccak_specs_summary.html) algorithm (similar to SHA3), for which the implementation can be found
+Each block's hash is generated using the [Keccak-256](https://keccak.team/keccak_specs_summary.html) algorithm, for which the implementation can be found
 in [KeccakHashHelper.java](https://github.com/jounaidr/jrc-node/blob/master/src/main/java/com/jounaidr/jrc/node/crypto/KeccakHashHelper.java). 
 This implementation uses the [Bouncy Castle Api](https://www.bouncycastle.org/).
 
