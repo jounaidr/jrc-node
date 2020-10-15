@@ -39,7 +39,8 @@ in [KeccakHashHelper.java](https://github.com/jounaidr/jrc-node/blob/master/src/
 This implementation uses the [Bouncy Castle Api](https://www.bouncycastle.org/).
 
 ### Proof Of Work
-jrc will implement the Cryptonight proof of work algorithm.
+jrc will implement the Cryptonight proof of work algorithm, for which I am currently researching and developing a Java implementation.
+My current progress can be found in [this](https://github.com/jounaidr/keccak-java-speedtest) repo.
 
 ### Chain Validation/Replacement
 In order to validate incoming chains, [Blockchain.java](https://github.com/jounaidr/jrc-node/blob/master/src/main/java/com/jounaidr/jrc/node/blockchain/Blockchain.java)
