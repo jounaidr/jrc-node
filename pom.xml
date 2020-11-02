@@ -28,6 +28,12 @@
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>1.66</version>
 		</dependency>
+		<!-- https://github.com/jounaidr/CryptoNightJNI -->
+		<dependency>
+			<groupId>com.jounaidr</groupId>
+			<artifactId>CryptoNightJNI</artifactId>
+			<version>1.0</version>
+		</dependency>
 
 		<!-- spring -->
 		<dependency>
