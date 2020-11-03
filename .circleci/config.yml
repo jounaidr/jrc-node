@@ -7,8 +7,6 @@ workflows:
   maven_test:
     jobs:
       - maven/test # checkout, build, test, and upload test results
-  upload_results:
-    jobs:
       steps:
         - run:
             name: Save test results
