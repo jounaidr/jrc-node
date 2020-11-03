@@ -7,7 +7,6 @@ workflows:
   maven_test:
     jobs:
       - maven/test # checkout, build, test, and upload test results
-    run: 
       - store_artifacts:
-          path: /home/circleci/project/target/surefire-reports
+          path: /home/circleci/project/target/surefire-reports/
           destination: test-results
