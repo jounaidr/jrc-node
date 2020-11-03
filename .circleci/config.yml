@@ -10,5 +10,6 @@ workflows:
   upload_results:
     working_directory: /tmp
     jobs:
-      - store_artifacts:
-          path: /tmp/artifacts
+      steps:
+        - store_artifacts:
+            path: /tmp/artifacts
