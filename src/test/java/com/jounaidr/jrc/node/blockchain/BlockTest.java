@@ -31,7 +31,7 @@ class BlockTest {
         String expectedData = "dummydata";
         String expectedTimeStamp = "1";
 
-        String expectedHash = "a08b215c09b7fe19efec514986dcc3566da094743e1c6e0d9d6ca70ed51231bc";
+        String expectedHash = "4efdf842cc17af6a4f4b774cc028af707b2e9b188f9cbf73789c0ccbe34ae029";
 
         Block genesisBlock = new Block();
 
@@ -49,7 +49,7 @@ class BlockTest {
     @Test //Test that .mineBlock() correctly sets previousHash value of a newly mined block to the hash value of the previous block, and that the block data is correct
     public void testMinedBlockIsGeneratedCorrectly(){
         //Given
-        String genesisHash = "a08b215c09b7fe19efec514986dcc3566da094743e1c6e0d9d6ca70ed51231bc";
+        String genesisHash = "4efdf842cc17af6a4f4b774cc028af707b2e9b188f9cbf73789c0ccbe34ae029";
 
         Block genesisBlock = new Block();
         genesisBlock.genesis();

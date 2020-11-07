@@ -83,7 +83,7 @@ class BlockchainTest {
     @Test
     public void testBlockchainValidationInvalidGenesisBlock(){
         //Given
-        Block genesisBlock = new Block();
+        Block genesisBlock = new Block().genesis();
 
         List<Block> invalidGenesisChain = new ArrayList<>(); //create a dummy chain as a new arraylist
         Block badBoyBlock = new Block().mineBlock(genesisBlock,"Im a verrrrry bad block whos going to do bad things >:)");
