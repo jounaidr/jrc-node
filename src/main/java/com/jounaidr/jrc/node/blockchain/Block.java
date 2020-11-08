@@ -7,9 +7,11 @@ import java.time.Instant;
 
 //TODO: implement slf4j logging after blockchain has been fully implemented
 public class Block {
+    private static final long MINE_RATE = 120;
+
     private static final String GENESIS_PREVIOUS_HASH = "dummyhash";
     private static final String GENESIS_DATA = "dummydata";
-    private static final String GENESIS_TIME_STAMP = "1";
+    private static final String GENESIS_TIME_STAMP = "2020-11-07T19:40:57.585581100Z";
     private static final String GENESIS_NONCE = "dummydata";
     private static final String GENESIS_DIFFICULTY = "3";
     private static final String GENESIS_PROOF_OF_WORK = "dummyPOW";
@@ -46,7 +48,6 @@ public class Block {
 
         this.setPreviousHash(previousBlock.getHash());
         this.setData(data);
-        this.setDifficulty(previousBlock.getDifficulty());
 
         int currentNonce = 0;
         byte[] currentProofOfWork;
@@ -56,6 +57,8 @@ public class Block {
 
             Instant ts = Instant.now();
             this.setTimeStamp(ts.toString()); //Set timestamp to current time and current interation in loop
+
+            adjustDifficulty(previousBlock); //Adjust the difficulty based on the new timestamp
 
             String proofOfWorkData = this.previousHash + this.data + this.timeStamp + this.difficulty + currentNonce;
 
@@ -70,6 +73,28 @@ public class Block {
         this.setHash(this.generateHash()); //Now generate the blocks hash with all data
 
         return this;
+    }
+
+    private void adjustDifficulty(Block previousBlock){
+        int difficulty = Integer.parseInt(previousBlock.getDifficulty());
+
+        Instant previousBlockTimeStamp = Instant.parse(previousBlock.getTimeStamp());
+        Instant currentTimeStamp = Instant.parse(this.timeStamp);
+
+        long diffSeconds = currentTimeStamp.getEpochSecond() - previousBlockTimeStamp.getEpochSecond(); //Difference in seconds between the block currently being mined, and the previously mined block
+
+        if(diffSeconds > MINE_RATE){
+            difficulty--; //Decrement difficulty if time taken is greater than MINE_RATE (120 seconds)
+        }
+        else{
+            difficulty++; //Otherwise increase difficulty in an attempt to increase block mine time
+        }
+
+        if(difficulty < 1){
+            difficulty = 1; //Set difficulty to 1 if it drops below 1
+        }
+
+        this.setDifficulty(String.valueOf(difficulty));
     }
 
     private int getBinaryStringLeadingZeros(byte[] input){
@@ -104,6 +129,18 @@ public class Block {
         KeccakHashHelper keccakHashHelper = new KeccakHashHelper(message);
 
         return keccakHashHelper.returnHash();
+    }
+
+    public Boolean isProofOfWorkValid(){
+        String proofOfWorkData = this.previousHash + this.data + this.timeStamp + this.difficulty + this.nonce;
+        Cryptonight cryptonightValidator = new Cryptonight(proofOfWorkData);
+
+        String proofOfWorkBinaryString = getBinaryString(cryptonightValidator.returnHash());
+
+        if(!this.proofOfWork.equals(proofOfWorkBinaryString)) {
+            return false;
+        }
+        return true;
     }
 
     /**

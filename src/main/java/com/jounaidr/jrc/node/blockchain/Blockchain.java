@@ -64,7 +64,9 @@ public class Blockchain {
      * to ensure that its a valid genesis block.
      * If the initial check passes, then each block in the chain
      * will be checked that the previous hash value matches the
-     * hash value of the previous block.
+     * hash value of the previous block, and that each block has
+     * a valid proof of work, and that the difference in
+     * difficulty between blocks is not greater than 1
      *
      * @return if the chain is valid
      */
@@ -78,6 +80,15 @@ public class Blockchain {
             if(!(this.chain.get(i).getPreviousHash()).equals(this.chain.get(i-1).getHash())){
                 log.error("Chain is invalid, the {}th block in the chain has previousHash value {}, however the hash of the previous block is {}...",i,this.chain.get(i).getPreviousHash(),this.chain.get(i-1).getHash());
                 return false; //Verify each block in the chain references previous hash value correctly
+            }
+            if(!this.chain.get(i).isProofOfWorkValid()){
+                log.error("Chain is invalid, the {}th block in the chain has an invalid proof of work...",i);
+                return false; //Verify each block in the chain has valid proof of work
+            }
+            int changeInDifficulty = Math.abs(Integer.parseInt(this.chain.get(i-1).getDifficulty()) - Integer.parseInt(this.chain.get(i).getDifficulty()));
+            if(changeInDifficulty > 1){
+                log.error("Chain is invalid, the {}th block in the chain has a difficulty jump greater than 1. Difficulty changed by: {}...",i,changeInDifficulty);
+                return false; //Verify each block changes the difficulty by no more than 1
             }
         }
         log.debug("Blockchain is valid...");
