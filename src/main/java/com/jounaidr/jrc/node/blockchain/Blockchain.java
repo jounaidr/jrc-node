@@ -18,9 +18,10 @@ public class Blockchain {
      */
     public Blockchain(List<Block> chain) {
         log.debug("Initiating blockchain with genesis block...");
-
         this.chain = chain;
         this.chain.add(new Block().genesis());
+
+        log.info("Blockchain has been initialised with genesis block: {} ...", this.chain.get(this.chain.size() - 1).toString());
     }
 
     /**
@@ -33,6 +34,8 @@ public class Blockchain {
         log.debug("Adding new block to the chain with transaction data: {} ...", data);
         Block nextBlock = new Block().mineBlock(this.chain.get(this.chain.size() - 1), data);
         this.chain.add(nextBlock);
+
+        log.info("The following block has been mined: {} ...", nextBlock.toString());
     }
 
     /**
