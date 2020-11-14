@@ -6,7 +6,8 @@
         </encoder>
     </appender>
 
-    <root level="info">
+    <!-- NOTE: unit tests will fail if logging level not set to debug!-->
+    <root level="debug">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

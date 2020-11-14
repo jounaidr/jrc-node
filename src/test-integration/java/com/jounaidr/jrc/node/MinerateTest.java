@@ -18,7 +18,7 @@ class MinerateTest {
     private final Thread thisThread = Thread.currentThread();
     private final int timeToRun = 1800000; // 30 minutes;
 
-    @Test
+    @Test //This test will add blocks to the chain for 30 mins inorder to test difficulty is adjusted correctly around the minerate, turn logging level to info so console isn't flooded
     public void testMinerate(){
         Blockchain testChain = new Blockchain(new ArrayList<>()); //Initialise new blockchain
 

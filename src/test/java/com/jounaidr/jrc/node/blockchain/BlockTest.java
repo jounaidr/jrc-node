@@ -29,9 +29,12 @@ class BlockTest {
         //Given
         String expectedPreviousHash = "dummyhash";
         String expectedData = "dummydata";
-        String expectedTimeStamp = "1";
+        String expectedTimeStamp = "2020-11-07T19:40:57.585581100Z";
+        String expectedNonce = "dummydata";
+        String expectedDifficulty = "3";
+        String expectedProofOfWork = "dummyPOW";
 
-        String expectedHash = "4efdf842cc17af6a4f4b774cc028af707b2e9b188f9cbf73789c0ccbe34ae029";
+        String expectedHash = "6034f08ebe09268c00b3144673bc0a1ce787c2e992545e3ec276b38cbebd57b6";
 
         Block genesisBlock = new Block();
 
@@ -42,6 +45,9 @@ class BlockTest {
         assertEquals("failure - previousHash of the genesis block is incorrect", expectedPreviousHash, genesisBlock.getPreviousHash());
         assertEquals("failure - data of the genesis block is incorrect", expectedData, genesisBlock.getData());
         assertEquals("failure - timeStamp of the genesis block is incorrect", expectedTimeStamp, genesisBlock.getTimeStamp());
+        assertEquals("failure - nonce of the genesis block is incorrect", expectedNonce, genesisBlock.getNonce());
+        assertEquals("failure - difficulty of the genesis block is incorrect", expectedDifficulty, genesisBlock.getDifficulty());
+        assertEquals("failure - proofOfWork of the genesis block is incorrect", expectedProofOfWork, genesisBlock.getProofOfWork());
 
         assertEquals("failure - generated genesis block hash is incorrect", expectedHash, genesisBlock.getHash());
     }
@@ -49,7 +55,7 @@ class BlockTest {
     @Test //Test that .mineBlock() correctly sets previousHash value of a newly mined block to the hash value of the previous block, and that the block data is correct
     public void testMinedBlockIsGeneratedCorrectly(){
         //Given
-        String genesisHash = "4efdf842cc17af6a4f4b774cc028af707b2e9b188f9cbf73789c0ccbe34ae029";
+        String genesisHash = "6034f08ebe09268c00b3144673bc0a1ce787c2e992545e3ec276b38cbebd57b6";
 
         Block genesisBlock = new Block();
         genesisBlock.genesis();
@@ -61,7 +67,7 @@ class BlockTest {
         secondBlock.mineBlock(genesisBlock,"secondBlockData");
         thirdBlock.mineBlock(secondBlock,"thirdBlockData");
 
-        //Then (note: cannot assert generated hash of second block as this will allways be different due to changing timestamp)
+        //Then (note: cannot assert generated hash of second block as this will always be different due to changing timestamp)
         assertEquals("failure - previousHash of second block does not equal genesis hash", genesisHash, secondBlock.getPreviousHash());
         assertEquals("failure - data of second block is incorrect", "secondBlockData", secondBlock.getData());
 
@@ -69,4 +75,6 @@ class BlockTest {
         assertEquals("failure - previousHash of third block does not equal second block hash", "thirdBlockData", thirdBlock.getData());
         assertNotEquals("failure - hash of second block is the same as third block",secondBlock.getHash(),thirdBlock.getHash());
     }
+
+    //TODO: Create proof of work related unit tests, CHECK COVERAGE
 }
