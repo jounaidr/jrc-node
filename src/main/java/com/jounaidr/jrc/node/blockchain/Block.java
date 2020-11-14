@@ -24,6 +24,26 @@ public class Block {
     private String difficulty;
     private String proofOfWork;
 
+    public Block() {
+        this.hash = null;
+        this.previousHash = null;
+        this.data = null;
+        this.timeStamp = null;
+        this.nonce = null;
+        this.difficulty = null;
+        this.proofOfWork = null;
+    }
+
+    public Block(String hash, String previousHash, String data, String timeStamp, String nonce, String difficulty, String proofOfWork) {
+        this.hash = hash;
+        this.previousHash = previousHash;
+        this.data = data;
+        this.timeStamp = timeStamp;
+        this.nonce = nonce;
+        this.difficulty = difficulty;
+        this.proofOfWork = proofOfWork;
+    }
+
     /**
      * Use genesis constants to generate the
      * genesis block
