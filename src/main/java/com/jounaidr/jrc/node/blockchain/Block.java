@@ -1,6 +1,7 @@
 package com.jounaidr.jrc.node.blockchain;
 
 import com.jounaidr.Cryptonight;
+import com.jounaidr.jrc.node.blockchain.helpers.BlockHelper;
 import com.jounaidr.jrc.node.crypto.KeccakHashHelper;
 
 import java.time.Instant;
@@ -85,10 +86,10 @@ public class Block {
             Cryptonight cryptonightPOW = new Cryptonight(proofOfWorkData);
             currentProofOfWork = cryptonightPOW.returnHash();
 
-        } while(!(this.difficulty.equals(String.valueOf(getBinaryStringLeadingZeros(currentProofOfWork))))); //Check if the currently calculated proof of work leading zeros meets the difficulty
+        } while(!(this.difficulty.equals(String.valueOf(BlockHelper.getBinaryStringLeadingZeros(currentProofOfWork))))); //Check if the currently calculated proof of work leading zeros meets the difficulty
 
         this.setNonce(String.valueOf(currentNonce)); //Set the nonce value of the block to the previously calculated value
-        this.setProofOfWork(getBinaryString(currentProofOfWork)); //Set the POW value of the block to the previously calculated value as binary string
+        this.setProofOfWork(BlockHelper.getBinaryString(currentProofOfWork)); //Set the POW value of the block to the previously calculated value as binary string
 
         this.setHash(this.generateHash()); //Now generate the blocks hash with all data
 
@@ -117,26 +118,6 @@ public class Block {
         this.setDifficulty(String.valueOf(difficulty));
     }
 
-    private int getBinaryStringLeadingZeros(byte[] input){
-        int leadingZeros;
-        String inputAsString = getBinaryString(input);
-
-        leadingZeros = inputAsString.length() - inputAsString.replaceAll("^0+", "").length();
-
-        return leadingZeros;
-    }
-
-    private String getBinaryString(byte[] input)
-    {
-        StringBuilder binaryString = new StringBuilder(input.length * Byte.SIZE);
-
-        for( int i = 0; i < Byte.SIZE * input.length; i++ ){
-            binaryString.append((input[i / Byte.SIZE] << i % Byte.SIZE & 0x80) == 0 ? '0' : '1');
-        }
-
-        return binaryString.toString();
-    }
-
     /**
      * Generate the block hash based on a
      * concatenated string of previousHash + data + timeStamp
@@ -155,7 +136,7 @@ public class Block {
         String proofOfWorkData = this.previousHash + this.data + this.timeStamp + this.difficulty + this.nonce;
         Cryptonight cryptonightValidator = new Cryptonight(proofOfWorkData);
 
-        String proofOfWorkBinaryString = getBinaryString(cryptonightValidator.returnHash());
+        String proofOfWorkBinaryString = BlockHelper.getBinaryString(cryptonightValidator.returnHash());
 
         if(!this.proofOfWork.equals(proofOfWorkBinaryString)) {
             return false;
