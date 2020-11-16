@@ -64,9 +64,28 @@ public class Block {
         return this;
     }
 
+    /**
+     * This method will return a new block based
+     * on a provided previous blocks information
+     * (previous hash, difficulty), and
+     * the data to be added to the new block.
+     * Inorder for the new block to be valid,
+     * a proof of work binary string must be
+     * generated (using CryptoNight hashing algorithm
+     * on the previousHash + data + timeStamp +
+     * difficulty + nonce) which has
+     * an amount of leading zeros equivalent to
+     * the current difficulty, which is adjusted
+     * during the mining process inorder for the
+     * blocks mine time to approximate the MINE_RATE
+     * of 120 seconds. The blocks hash is then generated
+     * using Keccak256 on all the blocks valid information
+     *
+     * @param previousBlock the previous block
+     * @param data          the current block data
+     * @return the mined block
+     */
     public Block mineBlock(Block previousBlock, String data){
-        //TODO: Once proof of work implemented, create javadoc for this method
-
         this.setPreviousHash(previousBlock.getHash());
         this.setData(data);
 
@@ -96,6 +115,17 @@ public class Block {
         return this;
     }
 
+    /**
+     * Method calculates the time diff between the
+     * previous block and block currently being mined
+     * and will increment the difficulty if diff is
+     * less than the MINE_RATE, and decrement difficulty
+     * if diff is greater than the MINE_RATE
+     * Method also checks for negative difficulty and
+     * will set difficulty to 1 if this should happen
+     *
+     * @param previousBlock the previous block
+     */
     private void adjustDifficulty(Block previousBlock){
         int difficulty = Integer.parseInt(previousBlock.getDifficulty());
 
@@ -132,6 +162,14 @@ public class Block {
         return keccakHashHelper.returnHash();
     }
 
+
+    /**
+     * Method will regenerate the POW binary string
+     * and validate it against the POW string that is
+     * set for this block
+     *
+     * @return if POW is valid
+     */
     public Boolean isProofOfWorkValid(){
         String proofOfWorkData = this.previousHash + this.data + this.timeStamp + this.difficulty + this.nonce;
         Cryptonight cryptonightValidator = new Cryptonight(proofOfWorkData);
