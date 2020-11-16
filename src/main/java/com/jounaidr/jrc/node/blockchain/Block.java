@@ -3,10 +3,11 @@ package com.jounaidr.jrc.node.blockchain;
 import com.jounaidr.Cryptonight;
 import com.jounaidr.jrc.node.blockchain.helpers.BlockHelper;
 import com.jounaidr.jrc.node.crypto.KeccakHashHelper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
 
-//TODO: implement slf4j logging after blockchain has been fully implemented
+@Slf4j
 public class Block {
     private static final long MINE_RATE = 120;
 
@@ -107,6 +108,9 @@ public class Block {
 
         } while(!(this.difficulty.equals(String.valueOf(BlockHelper.getByteArrayLeadingZeros(currentProofOfWork))))); //Check if the currently calculated proof of work leading zeros meets the difficulty
 
+        log.info("Valid proof of work has been found with nonce: {}, and timestamp {} ! POW hash was found in: {} seconds...", currentNonce, this.timeStamp,
+                BlockHelper.calcBlockTimeDiff(this.timeStamp,previousBlock.getTimeStamp()));
+
         this.setNonce(String.valueOf(currentNonce)); //Set the nonce value of the block to the previously calculated value
         this.setProofOfWork(BlockHelper.getBinaryString(currentProofOfWork)); //Set the POW value of the block to the previously calculated value as binary string
 
@@ -128,11 +132,7 @@ public class Block {
      */
     private void adjustDifficulty(Block previousBlock){
         int difficulty = Integer.parseInt(previousBlock.getDifficulty());
-
-        Instant previousBlockTimeStamp = Instant.parse(previousBlock.getTimeStamp());
-        Instant currentTimeStamp = Instant.parse(this.timeStamp);
-
-        long diffSeconds = currentTimeStamp.getEpochSecond() - previousBlockTimeStamp.getEpochSecond(); //Difference in seconds between the block currently being mined, and the previously mined block
+        long diffSeconds = BlockHelper.calcBlockTimeDiff(this.timeStamp,previousBlock.getTimeStamp()); //Difference in seconds between the block currently being mined, and the previously mined block
 
         if(diffSeconds > MINE_RATE){
             difficulty--; //Decrement difficulty if time taken is greater than MINE_RATE (120 seconds)
@@ -142,6 +142,7 @@ public class Block {
         }
 
         if(difficulty < 1){
+            log.error("Previous block difficulty is negative: {}, setting current block difficulty to 1...", difficulty);
             difficulty = 1; //Set difficulty to 1 if it drops below 1
         }
 

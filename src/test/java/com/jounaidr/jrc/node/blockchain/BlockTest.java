@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import com.jounaidr.jrc.node.blockchain.helpers.BlockHelper;
 import com.jparams.verifier.tostring.NameStyle;
 import com.jparams.verifier.tostring.ToStringVerifier;
 import org.junit.Assert;
@@ -95,12 +96,8 @@ class BlockTest {
         secondBlock.mineBlock(genesisBlock,"Difficulty should reduce");
         thirdBlock.mineBlock(secondBlock,"Difficulty should increase");
 
-        Instant genesisBlockTimeStamp = Instant.parse(genesisBlock.getTimeStamp());
-        Instant secondBlockTimeStamp = Instant.parse(secondBlock.getTimeStamp());
-        Instant thirdBlockTimeStamp = Instant.parse(thirdBlock.getTimeStamp());
-
-        long secondBlockDiff = secondBlockTimeStamp.getEpochSecond() - genesisBlockTimeStamp.getEpochSecond(); //Time taken between genesis block was mined, and second block was mined
-        long thirdBlockDiff = thirdBlockTimeStamp.getEpochSecond() - secondBlockTimeStamp.getEpochSecond(); //Time taken between second block was mined, and third block was mined
+        long secondBlockDiff = BlockHelper.calcBlockTimeDiff(secondBlock.getTimeStamp(),genesisBlock.getTimeStamp()); //Time taken between genesis block was mined, and second block was mined
+        long thirdBlockDiff = BlockHelper.calcBlockTimeDiff(thirdBlock.getTimeStamp(),secondBlock.getTimeStamp()); //Time taken between second block was mined, and third block was mined
 
         //Then
         assertEquals("failure - difficulty of the genesis block is incorrect", "3", genesisBlock.getDifficulty());

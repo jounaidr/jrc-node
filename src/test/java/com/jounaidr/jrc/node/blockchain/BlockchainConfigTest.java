@@ -20,7 +20,7 @@ class BlockchainConfigTest {
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 
     @Test
-    public void testBlockchainconfigInitialisesBlockchain(){
+    public void testBlockchainConfigInitialisesBlockchain(){
         //Given
         BlockchainConfig testConfig = new BlockchainConfig();
         Block genesisBlock = new Block().genesis();
@@ -45,5 +45,6 @@ class BlockchainConfigTest {
         assertEquals("failure - Original blockchains chain is incorrect length", 1, testChain.getChain().size());
 
         assertEquals("failure - incorrect logging message displayed","Initiating blockchain with genesis block...", logsList.get(0).getMessage());
+        assertEquals("failure - incorrect logging message displayed","Blockchain has been initialised with genesis block: {} ...", logsList.get(1).getMessage());
     }
 }

@@ -1,5 +1,7 @@
 package com.jounaidr.jrc.node.blockchain.helpers;
 
+import java.time.Instant;
+
 public class BlockHelper {
 
     /**
@@ -33,5 +35,20 @@ public class BlockHelper {
         }
 
         return binaryString.toString();
+    }
+
+    /**
+     * Calc the difference in time between
+     * two blocks in seconds as long
+     *
+     * @param currentBlockTs  the current blocks time stamp
+     * @param previousBlockTs the previous blocks time stamp to calc time diff from
+     * @return seconds between current and previous block as long
+     */
+    public static long calcBlockTimeDiff(String currentBlockTs, String previousBlockTs){
+        Instant previousBlockTimeStamp = Instant.parse(previousBlockTs);
+        Instant currentTimeStamp = Instant.parse(currentBlockTs);
+
+        return currentTimeStamp.getEpochSecond() - previousBlockTimeStamp.getEpochSecond();
     }
 }
