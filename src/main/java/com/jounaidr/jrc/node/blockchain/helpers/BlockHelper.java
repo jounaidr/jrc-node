@@ -2,7 +2,14 @@ package com.jounaidr.jrc.node.blockchain.helpers;
 
 public class BlockHelper {
 
-    public static int getBinaryStringLeadingZeros(byte[] input){
+    /**
+     * Return the number of leading zeros
+     * in a byte array binary string
+     *
+     * @param input byte array input
+     * @return int of leading zeros
+     */
+    public static int getByteArrayLeadingZeros(byte[] input){
         int leadingZeros;
         String inputAsString = getBinaryString(input);
 
@@ -11,6 +18,12 @@ public class BlockHelper {
         return leadingZeros;
     }
 
+    /**
+     * Converts a byte array to a binary string
+     *
+     * @param input byte array input
+     * @return binary string equivalent to byte array input
+     */
     public static String getBinaryString(byte[] input)
     {
         StringBuilder binaryString = new StringBuilder(input.length * Byte.SIZE);

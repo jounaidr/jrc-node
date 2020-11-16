@@ -11,7 +11,7 @@ class BlockHelperTest {
         //given
         byte[] in = new byte[] { (byte) 0x00, (byte)0x48, (byte)0x00, (byte)0x03}; //Initialise binary array with 9 leading zeros
 
-        int out = BlockHelper.getBinaryStringLeadingZeros(in);
+        int out = BlockHelper.getByteArrayLeadingZeros(in);
 
         assertEquals("failure - Binary String output is incorrect", 9, out);
     }

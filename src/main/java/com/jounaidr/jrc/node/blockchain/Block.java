@@ -105,7 +105,7 @@ public class Block {
             Cryptonight cryptonightPOW = new Cryptonight(proofOfWorkData);
             currentProofOfWork = cryptonightPOW.returnHash();
 
-        } while(!(this.difficulty.equals(String.valueOf(BlockHelper.getBinaryStringLeadingZeros(currentProofOfWork))))); //Check if the currently calculated proof of work leading zeros meets the difficulty
+        } while(!(this.difficulty.equals(String.valueOf(BlockHelper.getByteArrayLeadingZeros(currentProofOfWork))))); //Check if the currently calculated proof of work leading zeros meets the difficulty
 
         this.setNonce(String.valueOf(currentNonce)); //Set the nonce value of the block to the previously calculated value
         this.setProofOfWork(BlockHelper.getBinaryString(currentProofOfWork)); //Set the POW value of the block to the previously calculated value as binary string
