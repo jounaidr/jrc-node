@@ -2,13 +2,14 @@ package com.jounaidr.jrc.node.crypto;
 
 import com.jounaidr.Cryptonight;
 import org.bouncycastle.util.encoders.Hex;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 class CryptonightTest {
@@ -52,7 +53,7 @@ class CryptonightTest {
     public void testCryptonightHashesAreCorrect(){
         for (int i = 0; i < inputData.size(); i++) {
             Cryptonight cryptonight = new Cryptonight(inputData.get(i));
-            Assertions.assertEquals(validHashes.get(i),new String(Hex.encode(cryptonight.returnHash())));
+            assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(i)),validHashes.get(i),new String(Hex.encode(cryptonight.returnHash())));
         }
     }
 }
