@@ -53,7 +53,8 @@ class CryptonightTest {
     public void testCryptonightHashesAreCorrect(){
         for (int i = 0; i < inputData.size(); i++) {
             Cryptonight cryptonight = new Cryptonight(inputData.get(i));
-            assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(i)),validHashes.get(i),new String(Hex.encode(cryptonight.returnHash())));
+            String out = new String(Hex.encode(cryptonight.returnHash()));
+            assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(i)),validHashes.get(i),out);
         }
     }
 }
