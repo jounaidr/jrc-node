@@ -83,7 +83,7 @@ class BlockchainTest {
     @Test
     public void testBlockchainValidationInvalidGenesisBlock(){
         //Given
-        Block genesisBlock = new Block();
+        Block genesisBlock = new Block().genesis();
 
         List<Block> invalidGenesisChain = new ArrayList<>(); //create a dummy chain as a new arraylist
         Block badBoyBlock = new Block().mineBlock(genesisBlock,"Im a verrrrry bad block whos going to do bad things >:)");
@@ -116,7 +116,7 @@ class BlockchainTest {
         Block forthBlock = new Block().mineBlock(thirdBlock,"Im meant to be the second block in the chain");
 
         invalidPreviousHashChain.add(forthBlock);
-        invalidPreviousHashChain.add(forthBlock); //switch around the second and third blocks in the chain
+        invalidPreviousHashChain.add(thirdBlock); //switch around the second and third blocks in the chain
 
         Blockchain evilBlockchain = new Blockchain(invalidPreviousHashChain); //Initialise the evil blockchain with the dummy chain
 
@@ -131,6 +131,63 @@ class BlockchainTest {
 
         assertFalse("failure - blockchain with invalid block order has verified as valid, big ouf...", isChainValid);
         assertEquals("failure - incorrect logging message displayed","Chain is invalid, the {}th block in the chain has previousHash value {}, however the hash of the previous block is {}...", logsList.get(0).getMessage());
+    }
+
+    @Test
+    public void testBlockchainValidationInvalidProofOfWork(){
+        //Given
+        List<Block> invalidPreviousHashChain = new ArrayList<>(); //create a dummy chain as a new arraylist
+
+        Block genesisBlock = new Block().genesis();
+        Block validSecondBlock = new Block().mineBlock(genesisBlock,"secondBlockData"); //A valid second block
+
+        //Generate a block based on the previously generated valid second block, but set proof of work to an invalid binary string
+        Block evilSecondBlock = new Block(validSecondBlock.getHash(), validSecondBlock.getPreviousHash(), validSecondBlock.getData(), validSecondBlock.getTimeStamp(), validSecondBlock.getNonce(), validSecondBlock.getDifficulty(), "1000101");
+
+        invalidPreviousHashChain.add(genesisBlock);
+        invalidPreviousHashChain.add(evilSecondBlock); //Add the invalid block to the dummy chain
+
+        Blockchain evilBlockchain = new Blockchain(invalidPreviousHashChain); //Initialise the evil blockchain with the dummy chain
+
+        //When
+        listAppender.start();
+        logger.addAppender(listAppender); //start log capture...
+
+        Boolean isChainValid = evilBlockchain.isChainValid();
+
+        //Then
+        List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
+
+        assertFalse("failure - blockchain that has a block with invalid proof of work has verified as valid, big ouf...", isChainValid);
+        assertEquals("failure - incorrect logging message displayed","Chain is invalid, the {}th block in the chain has an invalid proof of work...", logsList.get(0).getMessage());
+    }
+
+    @Test
+    public void testBlockchainValidationInvalidDifficulty(){
+        //Given
+        List<Block> invalidPreviousHashChain = new ArrayList<>(); //create a dummy chain as a new arraylist
+
+        Block genesisBlock = new Block().genesis();
+
+        //Generate a block based on the previously generated valid second block, but set jump the difficulty more than 1
+        Block evilSecondBlock = new Block("This Block Jumps Difficulty", "6034f08ebe09268c00b3144673bc0a1ce787c2e992545e3ec276b38cbebd57b6", "secondBlockData", "2020-11-14T23:55:10.208261300Z", "4", "69", "1111001110010001000010000010001100000000001111101111010000000011001000100110011010001000001010100111011110111000001001011101000110000111010001110000101001010010000101011110110011011111110101111000100101011011110011110101011101001010000011100100011111010000");
+
+        invalidPreviousHashChain.add(genesisBlock);
+        invalidPreviousHashChain.add(evilSecondBlock); //Add the invalid block to the dummy chain
+
+        Blockchain evilBlockchain = new Blockchain(invalidPreviousHashChain); //Initialise the evil blockchain with the dummy chain
+
+        //When
+        listAppender.start();
+        logger.addAppender(listAppender); //start log capture...
+
+        Boolean isChainValid = evilBlockchain.isChainValid();
+
+        //Then
+        List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
+
+        assertFalse("failure - blockchain that has a difficulty jump has verified as valid, big ouf...", isChainValid);
+        assertEquals("failure - incorrect logging message displayed","Chain is invalid, the {}th block in the chain has a difficulty jump greater than 1. Difficulty changed by: {}...", logsList.get(0).getMessage());
     }
 
     @Test
@@ -202,7 +259,7 @@ class BlockchainTest {
         Block forthBlock = new Block().mineBlock(thirdBlock,"Im meant to be the second block in the chain");
 
         invalidPreviousHashChain.add(forthBlock);
-        invalidPreviousHashChain.add(forthBlock); //switch around the second and third blocks in the chain
+        invalidPreviousHashChain.add(thirdBlock); //switch around the second and third blocks in the chain
 
         Blockchain evilBigBlockchain = new Blockchain(invalidPreviousHashChain); //Initialise the evil blockchain with the dummy chain
 

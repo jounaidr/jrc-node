@@ -15,7 +15,7 @@
 	<description>jrc peer to peer network node</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 
 	<dependencies>
@@ -27,6 +27,12 @@
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>1.66</version>
+		</dependency>
+		<!-- https://github.com/jounaidr/CryptoNightJNI -->
+		<dependency>
+			<groupId>com.jounaidr</groupId>
+			<artifactId>CryptoNightJNI</artifactId>
+			<version>1.0</version>
 		</dependency>
 
 		<!-- spring -->
