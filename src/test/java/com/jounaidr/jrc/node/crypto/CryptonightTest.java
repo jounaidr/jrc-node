@@ -58,45 +58,59 @@ class CryptonightTest {
         cryptonight = new Cryptonight(inputData.get(0));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(0)),validHashes.get(0),out);
+
         cryptonight = new Cryptonight(inputData.get(1));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(1)),validHashes.get(1),out);
+
         cryptonight = new Cryptonight(inputData.get(2));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(2)),validHashes.get(2),out);
+
         cryptonight = new Cryptonight(inputData.get(3));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(3)),validHashes.get(3),out);
+
         cryptonight = new Cryptonight(inputData.get(4));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(4)),validHashes.get(4),out);
+
         cryptonight = new Cryptonight(inputData.get(5));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(5)),validHashes.get(5),out);
+
         cryptonight = new Cryptonight(inputData.get(6));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(6)),validHashes.get(6),out);
+
         cryptonight = new Cryptonight(inputData.get(7));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(7)),validHashes.get(7),out);
+
         cryptonight = new Cryptonight(inputData.get(8));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(8)),validHashes.get(8),out);
+
         cryptonight = new Cryptonight(inputData.get(9));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(9)),validHashes.get(9),out);
+
         cryptonight = new Cryptonight(inputData.get(10));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(10)),validHashes.get(10),out);
+
         cryptonight = new Cryptonight(inputData.get(11));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(11)),validHashes.get(11),out);
+
         cryptonight = new Cryptonight(inputData.get(12));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(12)),validHashes.get(12),out);
+
         cryptonight = new Cryptonight(inputData.get(13));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(13)),validHashes.get(13),out);
+
         cryptonight = new Cryptonight(inputData.get(14));
         out = new String(Hex.encode(cryptonight.returnHash()));
         assertEquals(String.format("The following message was incorrectly hashed: %s ", inputData.get(14)),validHashes.get(14),out);
