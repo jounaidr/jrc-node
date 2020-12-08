@@ -35,6 +35,28 @@
 			<version>1.1</version>
 		</dependency>
 
+		<!-- networking -->
+		<dependency>
+			<groupId>io.atomix</groupId>
+			<artifactId>atomix</artifactId>
+			<version>3.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.atomix</groupId>
+			<artifactId>atomix-raft</artifactId>
+			<version>3.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.atomix</groupId>
+			<artifactId>atomix-primary-backup</artifactId>
+			<version>3.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.atomix</groupId>
+			<artifactId>atomix-gossip</artifactId>
+			<version>3.0.6</version>
+		</dependency>
+
 		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
