@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Slf4j
-//@Component
+//Component
 public class AtomixCluster {
 
     private Atomix atomixCluster;
@@ -21,22 +21,24 @@ public class AtomixCluster {
     @Value("${server.address}")
     private String nodeAddress;
 
+    @Value("${peer.address}")
+    private String peerAddress;
+
     @PostConstruct
     public void initAtomix() {
         log.info("Initialising node with network with address: {}:{} ...",nodeAddress,ATOMIX_PORT);
         this.atomixCluster = Atomix.builder()
 
                 .withAddress(String.format("%s:%s",nodeAddress,ATOMIX_PORT)) //Initialise atomix cluster with local address
-                .withMulticastEnabled() //Multicast will dynamically locate and add peers
-                .withProfiles(Profile.dataGrid())
                 .withMembershipProvider(BootstrapDiscoveryProvider.builder()
                         .withNodes(
-                                Node.builder()
-                                        .withId("member1")
-                                        .withAddress("100.25.48.127:8081")
+                                Node.builder() //TODO: THIS CAN BE MULTIPLEIZED BY MAKING A LIST OF NODES BEFORE IN FOR LOOP
+                                        .withId("peer-1")
+                                        .withAddress(String.format("%s:%s",peerAddress,ATOMIX_PORT))
                                         .build())
                         .build())
-
+                .withMulticastEnabled() //Multicast will dynamically locate and add peers
+                .withProfiles(Profile.dataGrid())
                 .build();
 
         this.atomixCluster.start().join();
