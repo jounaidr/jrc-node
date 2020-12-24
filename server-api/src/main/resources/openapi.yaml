@@ -1,0 +1,56 @@
+openapi: 3.0.2
+
+################################################################################
+#                              API Information                                 #
+################################################################################
+info:
+  title: jrc-node server api spec
+  description: "OpenAPI specification for the blockchain server backend for jrc-node"
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/mit-license.php
+  version: 0.0.1-SNAPSHOT
+externalDocs:
+  description: Full Documentation
+  url: https://github.com/jounaidr/jrc-node
+
+################################################################################
+#                              API Definitions                                 #
+################################################################################
+paths:
+  /blockchain:
+    get:
+      summary: Get Full Blockchain
+      operationId: getBlockchain
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Blockchain'
+
+components:
+  schemas:
+    Blockchain:
+      type: array
+      items:
+        $ref: '#/components/schemas/Block'
+
+    Block:
+      type: object
+      properties:
+        hash:
+          type: string
+        previousHash:
+          type: string
+        data:
+          type: string
+        timeStamp:
+          type: string
+        nonce:
+          type: string
+        difficulty:
+          type: string
+        proofOfWork:
+          type: string

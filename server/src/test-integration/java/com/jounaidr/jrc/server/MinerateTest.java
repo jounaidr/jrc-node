@@ -1,7 +1,7 @@
-package com.jounaidr.jrc.node;
+package com.jounaidr.jrc.server;
 
-import com.jounaidr.jrc.node.blockchain.Blockchain;
-import com.jounaidr.jrc.node.blockchain.helpers.BlockHelper;
+import com.jounaidr.jrc.server.blockchain.Blockchain;
+import com.jounaidr.jrc.server.blockchain.helpers.BlockHelper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

@@ -1,4 +1,4 @@
-package com.jounaidr.jrc.node.blockchain;
+package com.jounaidr.jrc.server.blockchain;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;

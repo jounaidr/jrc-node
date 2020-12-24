@@ -1,4 +1,4 @@
-package com.jounaidr.jrc.node.blockchain;
+package com.jounaidr.jrc.server.blockchain;
 
 import lombok.extern.slf4j.Slf4j;
 

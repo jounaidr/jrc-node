@@ -1,4 +1,4 @@
-package com.jounaidr.jrc.node.blockchain;
+package com.jounaidr.jrc.server.blockchain;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

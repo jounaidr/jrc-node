@@ -6,6 +6,7 @@
 
 	<modules>
 		<module>server</module>
+		<module>server-api</module>
 	</modules>
 
 	<parent>
@@ -16,7 +17,7 @@
 	</parent>
 
 	<groupId>com.jounaidr.jrc</groupId>
-	<artifactId>node</artifactId>
+	<artifactId>jrc-node</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>jrc-node</name>
 	<description>jrc-node network infrastructure</description>

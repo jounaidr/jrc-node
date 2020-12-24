@@ -1,8 +1,8 @@
-package com.jounaidr.jrc.node.blockchain;
+package com.jounaidr.jrc.server.blockchain;
 
 import com.jounaidr.Cryptonight;
-import com.jounaidr.jrc.node.blockchain.helpers.BlockHelper;
-import com.jounaidr.jrc.node.crypto.KeccakHashHelper;
+import com.jounaidr.jrc.server.blockchain.helpers.BlockHelper;
+import com.jounaidr.jrc.server.blockchain.crypto.KeccakHashHelper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;

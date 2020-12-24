@@ -1,4 +1,4 @@
-package com.jounaidr.jrc.node.crypto;
+package com.jounaidr.jrc.server.crypto;
 
 import com.jounaidr.Cryptonight;
 import org.bouncycastle.util.encoders.Hex;

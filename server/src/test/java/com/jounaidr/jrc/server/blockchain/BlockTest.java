@@ -1,4 +1,4 @@
-package com.jounaidr.jrc.node.blockchain;
+package com.jounaidr.jrc.server.blockchain;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.jounaidr.jrc.node.blockchain.helpers.BlockHelper;
+import com.jounaidr.jrc.server.blockchain.helpers.BlockHelper;
 import com.jparams.verifier.tostring.NameStyle;
 import com.jparams.verifier.tostring.ToStringVerifier;
 import org.junit.Assert;
@@ -14,8 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.meanbean.test.BeanTester;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.time.Instant;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 class BlockTest {

@@ -1,5 +1,6 @@
-package com.jounaidr.jrc.node.crypto;
+package com.jounaidr.jrc.server.crypto;
 
+import com.jounaidr.jrc.server.blockchain.crypto.KeccakHashHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

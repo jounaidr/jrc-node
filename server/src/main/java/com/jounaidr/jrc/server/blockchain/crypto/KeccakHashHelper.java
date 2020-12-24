@@ -1,4 +1,4 @@
-package com.jounaidr.jrc.node.crypto;
+package com.jounaidr.jrc.server.blockchain.crypto;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jcajce.provider.digest.Keccak;

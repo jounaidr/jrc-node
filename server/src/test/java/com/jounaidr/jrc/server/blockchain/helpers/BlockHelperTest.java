@@ -1,4 +1,4 @@
-package com.jounaidr.jrc.node.blockchain.helpers;
+package com.jounaidr.jrc.server.blockchain.helpers;
 
 import org.junit.jupiter.api.Test;
 
