@@ -19,5 +19,5 @@
 	<artifactId>node</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>jrc-node</name>
-	<description>jrc peer to peer network node</description>
+	<description>jrc-node network infrastructure</description>
 </project>
