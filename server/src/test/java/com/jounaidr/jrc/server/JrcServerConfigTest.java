@@ -1,8 +1,11 @@
-package com.jounaidr.jrc.server.blockchain;
+package com.jounaidr.jrc.server;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import com.jounaidr.jrc.server.JrcServerConfig;
+import com.jounaidr.jrc.server.blockchain.Block;
+import com.jounaidr.jrc.server.blockchain.Blockchain;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
@@ -14,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-class BlockchainConfigTest {
+class JrcServerConfigTest {
 
     Logger logger = (Logger) LoggerFactory.getLogger(Blockchain.class);
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
@@ -22,7 +25,7 @@ class BlockchainConfigTest {
     @Test
     public void testBlockchainConfigInitialisesBlockchain(){
         //Given
-        BlockchainConfig testConfig = new BlockchainConfig();
+        JrcServerConfig testConfig = new JrcServerConfig();
         Block genesisBlock = new Block().genesis();
 
         //When

@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 public class BlockchainApiDelegateImpl implements BlockchainApiDelegate {
-    @Autowired
-    Blockchain blockchain;
+    private Blockchain blockchain;
+
+    public BlockchainApiDelegateImpl(Blockchain blockchain) {
+        this.blockchain = blockchain;
+    }
 
     @Override
     public ResponseEntity<List<Block>> getBlockchain() {
@@ -42,16 +44,16 @@ public class BlockchainApiDelegateImpl implements BlockchainApiDelegate {
     }
 
     private Block getBlockResponse(int blockIndex) {
-        Block block = new Block();
+        Block blockResponse = new Block();
 
-        block.setHash(this.blockchain.getChain().get(blockIndex).getHash());
-        block.setPreviousHash(this.blockchain.getChain().get(blockIndex).getPreviousHash());
-        block.setData(this.blockchain.getChain().get(blockIndex).getData());
-        block.setTimeStamp(this.blockchain.getChain().get(blockIndex).getTimeStamp());
-        block.setNonce(this.blockchain.getChain().get(blockIndex).getNonce());
-        block.setDifficulty(this.blockchain.getChain().get(blockIndex).getDifficulty());
-        block.setProofOfWork(this.blockchain.getChain().get(blockIndex).getProofOfWork());
+        blockResponse.setHash(this.blockchain.getChain().get(blockIndex).getHash());
+        blockResponse.setPreviousHash(this.blockchain.getChain().get(blockIndex).getPreviousHash());
+        blockResponse.setData(this.blockchain.getChain().get(blockIndex).getData());
+        blockResponse.setTimeStamp(this.blockchain.getChain().get(blockIndex).getTimeStamp());
+        blockResponse.setNonce(this.blockchain.getChain().get(blockIndex).getNonce());
+        blockResponse.setDifficulty(this.blockchain.getChain().get(blockIndex).getDifficulty());
+        blockResponse.setProofOfWork(this.blockchain.getChain().get(blockIndex).getProofOfWork());
 
-        return block;
+        return blockResponse;
     }
 }
