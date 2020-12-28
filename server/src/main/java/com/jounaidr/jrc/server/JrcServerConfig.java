@@ -1,18 +1,20 @@
 package com.jounaidr.jrc.server;
 
-import com.jounaidr.jrc.server.api.BlockchainApiDelegateImpl;
+import com.jounaidr.jrc.server.api.implementation.BlockchainApiDelegateImpl;
 import com.jounaidr.jrc.server.blockchain.Blockchain;
-import com.jounaidr.jrc.server.peers.Peer;
+import com.jounaidr.jrc.server.peers.peer.Peer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 @Configuration
 public class JrcServerConfig {
+    @Value("${peer.sockets}")
+    private String PEER_SOCKETS;
+
     @Autowired
     Blockchain blockchain;
 
@@ -28,7 +30,7 @@ public class JrcServerConfig {
     }
 
     @Bean
-    public Peer peer() throws IOException, JSONException {
+    public Peer peer() {
         String peerUrl = "http://54.86.229.200:8080";
         return new Peer(blockchain, peerUrl);
     }

@@ -43,10 +43,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/Block'
 
-  /blockchain/length:
+  /blockchain/size:
     get:
       summary: Get the blockchain length
-      operationId: getBlockchainLength
+      operationId: getBlockchainSize
       responses:
         200:
           description: successful operation

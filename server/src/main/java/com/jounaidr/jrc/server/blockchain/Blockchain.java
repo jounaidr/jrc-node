@@ -17,14 +17,13 @@ public class Blockchain {
      * genesis block at the start of the chain
      */
     public Blockchain(List<Block> chain) {
-        this.chain = chain; //TODO add logging for these changes
+        this.chain = chain; //TODO add logging for these changes look at old master and compare logs before u merge!!
 
         if(this.chain.size() < 1){
             log.debug("Initiating blockchain with genesis block...");
             this.chain.add(new Block().genesis());
             log.info("Blockchain has been initialised with genesis block: {} ...", this.chain.get(this.chain.size() - 1).toString());
         }
-
     }
 
     /**
