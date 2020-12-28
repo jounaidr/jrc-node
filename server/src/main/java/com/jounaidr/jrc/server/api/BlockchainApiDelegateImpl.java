@@ -2,9 +2,7 @@ package com.jounaidr.jrc.server.api;
 
 import com.jounaidr.jrc.server.blockchain.Blockchain;
 import com.jounaidr.jrc.server.model.Block;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ public class BlockchainApiDelegateImpl implements BlockchainApiDelegate {
         ArrayList<Block> response = new ArrayList<>();
 
         for(int i=0; i < this.blockchain.getChain().size(); i++){
-            Block block = getBlockResponse(i);
+            Block block = getBlockModel(i);
             response.add(block);
         }
 
@@ -31,7 +29,7 @@ public class BlockchainApiDelegateImpl implements BlockchainApiDelegate {
     @Override
     public ResponseEntity<Block> getLastBlock() {
         int lastBlockIndex = this.blockchain.getChain().size() - 1;
-        Block response = getBlockResponse(lastBlockIndex);
+        Block response = getBlockModel(lastBlockIndex);
 
         return ResponseEntity.ok(response);
     }
@@ -43,17 +41,17 @@ public class BlockchainApiDelegateImpl implements BlockchainApiDelegate {
         return ResponseEntity.ok(response);
     }
 
-    private Block getBlockResponse(int blockIndex) {
-        Block blockResponse = new Block();
+    private Block getBlockModel(int blockIndex) {
+        Block blockModel = new Block();
 
-        blockResponse.setHash(this.blockchain.getChain().get(blockIndex).getHash());
-        blockResponse.setPreviousHash(this.blockchain.getChain().get(blockIndex).getPreviousHash());
-        blockResponse.setData(this.blockchain.getChain().get(blockIndex).getData());
-        blockResponse.setTimeStamp(this.blockchain.getChain().get(blockIndex).getTimeStamp());
-        blockResponse.setNonce(this.blockchain.getChain().get(blockIndex).getNonce());
-        blockResponse.setDifficulty(this.blockchain.getChain().get(blockIndex).getDifficulty());
-        blockResponse.setProofOfWork(this.blockchain.getChain().get(blockIndex).getProofOfWork());
+        blockModel.setHash(this.blockchain.getChain().get(blockIndex).getHash());
+        blockModel.setPreviousHash(this.blockchain.getChain().get(blockIndex).getPreviousHash());
+        blockModel.setData(this.blockchain.getChain().get(blockIndex).getData());
+        blockModel.setTimeStamp(this.blockchain.getChain().get(blockIndex).getTimeStamp());
+        blockModel.setNonce(this.blockchain.getChain().get(blockIndex).getNonce());
+        blockModel.setDifficulty(this.blockchain.getChain().get(blockIndex).getDifficulty());
+        blockModel.setProofOfWork(this.blockchain.getChain().get(blockIndex).getProofOfWork());
 
-        return blockResponse;
+        return blockModel;
     }
 }

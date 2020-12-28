@@ -17,7 +17,7 @@ public class Peer {
     private String peerUrl;
     private OkHttpClient client = new OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build();
 
-    public Peer(Blockchain blockchain, String peerUrl) throws IOException, JSONException {
+    public Peer(Blockchain blockchain, String peerUrl) throws JSONException {
         this.blockchain = blockchain;
         this.peerUrl = peerUrl;
         this.synchronisePeer();
@@ -25,7 +25,7 @@ public class Peer {
 
     public void synchronisePeer() throws JSONException {
         Request blockchainRequest = new Request.Builder().url(peerUrl + "/blockchain").build();
-        Response response = null;
+        Response response;
         JSONArray jsonResponse = null;
         try {
             response = client.newCall(blockchainRequest).execute();
