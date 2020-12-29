@@ -28,14 +28,9 @@ public class KeccakHashHelper {
      * @return the hashed message string in lowercase hex format
      */
     public String returnHash(){
-        log.debug("Attempting to hash the following message: {} ...", this.message);
-
         Keccak.Digest256 digest256 = new Keccak.Digest256();
         byte[] hashbytes = digest256.digest(message.getBytes(StandardCharsets.UTF_8));
-        String messageDigest = new String(Hex.encode(hashbytes));
 
-        log.debug("...Hash returned: {}", messageDigest);
-
-        return messageDigest;
+        return new String(Hex.encode(hashbytes));
     }
 }

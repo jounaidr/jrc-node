@@ -2,6 +2,7 @@ package com.jounaidr.jrc.server.blockchain;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.InvalidObjectException;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -17,27 +18,33 @@ public class Blockchain {
      * genesis block at the start of the chain
      */
     public Blockchain(List<Block> chain) {
-        this.chain = chain; //TODO add logging for these changes look at old master and compare logs before u merge!!
+        log.debug("Attempting to initialise a blockchain with the following chain array: {}...", chain.toString());
+        this.setChain(chain);
 
-        if(this.chain.size() < 1){
-            log.debug("Initiating blockchain with genesis block...");
-            this.chain.add(new Block().genesis());
-            log.info("Blockchain has been initialised with genesis block: {} ...", this.chain.get(this.chain.size() - 1).toString());
+        if(this.getChain().size() < 1){
+            this.getChain().add(new Block().genesis());
+            log.info("A Fresh blockchain has been initialised with genesis block...");
+            log.debug("Blockchain initialised with the following genesis block: {} ...", this.getLastBlock().toString());
         }
     }
 
     /**
-     * Mine a new block for some given data and
-     * add it to the end of the chain
+     * Validate an new incoming block and if valid,
+     * add the block to the chain
      *
-     * @param data transaction data to be added to the new block
+     * @param newBlock the new incoming block
      */
-    public void addBlock(String data){
-        log.debug("Adding new block to the chain with transaction data: {} ...", data);
-        Block nextBlock = new Block().mineBlock(this.chain.get(this.chain.size() - 1), data);
-        this.chain.add(nextBlock);
-
-        log.info("The following block has been mined: {} ...", nextBlock.toString());
+    public void addBlock(Block newBlock) throws InvalidObjectException {
+        log.info("Attempting to add new incoming block to the blockchain: {}...", newBlock.toString());
+        try {
+            // Validate the incoming block against this blockchains last block before adding new block
+            newBlock.isBlockValid(this.getLastBlock());
+            this.getChain().add(newBlock);
+            log.info("...Block added successfully!");
+        } catch (InvalidObjectException e) {
+            log.error("New incoming block is invalid and can't be added to the blockchain. Reason: {}", e.getMessage());
+            throw e;
+        }
     }
 
     /**
@@ -50,14 +57,19 @@ public class Blockchain {
      *
      * @param newBlockchain the new incoming blockchain
      */
-    public void replaceChain(Blockchain newBlockchain){
-        if(newBlockchain.getChain().size() <= this.chain.size()){
+    public void replaceChain(Blockchain newBlockchain) throws InvalidObjectException {
+        log.info("Attempting to replace the current blockchain with a new incoming blockchain");
+        if(newBlockchain.getChain().size() <= this.getChain().size()){
             log.debug("Incoming blockchain is not longer than current blockchain...");
             return;
         }
-        if(!newBlockchain.isChainValid()){
-            log.error("Incoming blockchain is longer than current blockchain, but is not valid...");
-            return;
+        try {
+            if(!newBlockchain.isChainValid()){
+                log.debug("Incoming blockchain is longer than current blockchain, but is not valid...");
+                return;
+            }
+        } catch (InvalidObjectException e) {
+            throw e;
         }
 
         this.setChain(newBlockchain.getChain());
@@ -68,36 +80,45 @@ public class Blockchain {
      * The first block in the chain will be initially checked
      * to ensure that its a valid genesis block.
      * If the initial check passes, then each block in the chain
-     * will be checked that the previous hash value matches the
-     * hash value of the previous block, and that each block has
-     * a valid proof of work, and that the difference in
-     * difficulty between blocks is not greater than 1
+     * will be validated using Block().isBlockValid, and that the
+     * difference in difficulty between blocks is not greater than 1
      *
      * @return if the chain is valid
      */
-    public boolean isChainValid(){
-        if(!(this.chain.get(0).toString()).equals(new Block().genesis().toString())){
+    public boolean isChainValid() throws InvalidObjectException {
+        if(!(this.getChain().get(0).toString()).equals(new Block().genesis().toString())){
             log.error("Chain is invalid, first block in the chain is not genesis block...");
             return false; //Verify first block in chain is genesis block
         }
 
-         for(int i=1; i < this.chain.size(); i++){
-            if(!(this.chain.get(i).getPreviousHash()).equals(this.chain.get(i-1).getHash())){
-                log.error("Chain is invalid, the {}th block in the chain has previousHash value {}, however the hash of the previous block is {}...",i,this.chain.get(i).getPreviousHash(),this.chain.get(i-1).getHash());
-                return false; //Verify each block in the chain references previous hash value correctly
-            }
-            if(!this.chain.get(i).isProofOfWorkValid()){
-                log.error("Chain is invalid, the {}th block in the chain has an invalid proof of work...",i);
-                return false; //Verify each block in the chain has valid proof of work
-            }
-            int changeInDifficulty = Math.abs(Integer.parseInt(this.chain.get(i-1).getDifficulty()) - Integer.parseInt(this.chain.get(i).getDifficulty()));
+         for(int i=1; i < this.getChain().size(); i++){
+             try {
+                 //Verify each block is valid against the previous block
+                 this.getChain().get(i).isBlockValid(this.getChain().get(i-1));
+             } catch (InvalidObjectException e) {
+                 log.error("Chain is invalid, the {}th block in the chain is invalid.",i);
+                 throw e;
+             }
+            //Verify each block changes the difficulty by no more than 1
+            int changeInDifficulty = Math.abs(Integer.parseInt(this.getChain().get(i-1).getDifficulty()) - Integer.parseInt(this.getChain().get(i).getDifficulty()));
             if(changeInDifficulty > 1){
                 log.error("Chain is invalid, the {}th block in the chain has a difficulty jump greater than 1. Difficulty changed by: {}...",i,changeInDifficulty);
-                return false; //Verify each block changes the difficulty by no more than 1
+                return false;
             }
         }
         log.debug("Blockchain is valid...");
         return true;
+    }
+
+    /**
+     * Getter for the last block in the chain
+     *
+     * @return lastBlock the last block
+     */
+    public Block getLastBlock() {
+        log.debug("Attempting to retrieve last block in the blockchain: {}...", this.getChain().get(this.getChain().size() - 1));
+        Block lastBlock = this.getChain().get(this.getChain().size() - 1);
+        return lastBlock;
     }
 
     /**
@@ -106,7 +127,7 @@ public class Blockchain {
      *
      * @return List<Block> this blockchains chain
      */
-    public List<Block> getChain(){
+    public List<Block> getChain() {
         Lock readLock = rwLock.readLock();
         readLock.lock();
         log.debug("Attempting to read chain...");
@@ -124,7 +145,7 @@ public class Blockchain {
      *
      * @param newChain incoming chain
      */
-    private void setChain(List<Block> newChain){
+    private void setChain(List<Block> newChain) {
         Lock writeLock = rwLock.writeLock();
         writeLock.lock();
         log.debug("Attempting to replace chain...");

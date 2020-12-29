@@ -8,6 +8,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 
 public class PeerThreadedSynchronizer implements Runnable{
@@ -40,8 +41,13 @@ public class PeerThreadedSynchronizer implements Runnable{
         }
 
         if(chainResponse.size() > this.blockchain.getChain().size()){
-            Blockchain blockchainResponse = new Blockchain(chainResponse);
-            this.blockchain.replaceChain(blockchainResponse);
+            try {
+                Blockchain blockchainResponse = new Blockchain(chainResponse);
+                this.blockchain.replaceChain(blockchainResponse);
+            } catch (InvalidObjectException e) {
+                // A block in the blockchain is invalid
+                e.printStackTrace();
+            }
         }
     }
 }

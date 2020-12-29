@@ -4,8 +4,10 @@ import com.jounaidr.jrc.server.api.generated.BlockchainApiDelegate;
 import com.jounaidr.jrc.server.api.generated.model.Block;
 import com.jounaidr.jrc.server.api.implementation.helpers.BlockModelHelper;
 import com.jounaidr.jrc.server.blockchain.Blockchain;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +32,21 @@ public class BlockchainApiDelegateImpl implements BlockchainApiDelegate {
 
     @Override
     public ResponseEntity<Block> getLastBlock() {
-        int lastBlockIndex = this.blockchain.getChain().size() - 1;
-        Block response = BlockModelHelper.getBlockAsModel(this.blockchain.getChain().get(lastBlockIndex));
+        Block response = BlockModelHelper.getBlockAsModel(this.blockchain.getLastBlock());
 
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<Object> addBlock(Block newBlock){
+        try {
+            this.blockchain.addBlock(BlockModelHelper.getBlockFromModel(newBlock));
+        } catch (InvalidObjectException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        return ResponseEntity.ok("Block added successfully!");
     }
 
     @Override
