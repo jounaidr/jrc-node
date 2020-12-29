@@ -42,7 +42,6 @@ public class BlockchainApiDelegateImpl implements BlockchainApiDelegate {
         try {
             this.blockchain.addBlock(BlockModelHelper.getBlockFromModel(newBlock));
         } catch (InvalidObjectException e) {
-            e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 

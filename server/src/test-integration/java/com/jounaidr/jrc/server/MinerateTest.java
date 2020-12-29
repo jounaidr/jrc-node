@@ -1,5 +1,6 @@
 package com.jounaidr.jrc.server;
 
+import com.jounaidr.jrc.server.blockchain.Block;
 import com.jounaidr.jrc.server.blockchain.Blockchain;
 import com.jounaidr.jrc.server.blockchain.helpers.BlockHelper;
 import lombok.SneakyThrows;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.InvalidObjectException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
@@ -19,7 +21,7 @@ class MinerateTest {
     private final int timeToRun = 1800000; // 30 minutes;
 
     @Test //This test will add blocks to the chain for 30 mins inorder to test difficulty is adjusted correctly around the minerate, turn logging level to info in logback.xml so console isn't flooded
-    public void testMinerate(){
+    public void testMinerate() throws InvalidObjectException {
         Blockchain testChain = new Blockchain(new ArrayList<>()); //Initialise new blockchain
 
         new Thread(new Runnable() {
@@ -31,8 +33,10 @@ class MinerateTest {
         }).start(); //Sleep current thread for timeToRun ms
 
         while (!Thread.interrupted()) { //Loop whilst thread is interrupted
-            testChain.addBlock(getRandomData()); //Add a block with random data
-            long diffSeconds = BlockHelper.calcBlockTimeDiff(testChain.getChain().get(testChain.getChain().size() - 1).getTimeStamp(),testChain.getChain().get(testChain.getChain().size() - 2).getTimeStamp()); //Difference in seconds between the block currently being mined, and the previously mined block
+            Block nextBlock = new Block().mineBlock(testChain.getLastBlock(), getRandomData());
+            testChain.addBlock(nextBlock); //Add a block with random data
+
+            long diffSeconds = BlockHelper.calcBlockTimeDiff(testChain.getLastBlock().getTimeStamp(),testChain.getChain().get(testChain.getChain().size() - 2).getTimeStamp()); //Difference in seconds between the block currently being mined, and the previously mined block
 
             System.out.println("Block took: " + diffSeconds + " seconds to mine...");
         }
