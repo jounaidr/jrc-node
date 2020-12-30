@@ -35,7 +35,8 @@ public class Blockchain {
      * @param newBlock the new incoming block
      */
     public void addBlock(Block newBlock) throws InvalidObjectException {
-        log.info("Attempting to add new incoming block to the blockchain: {}...", newBlock.toString());
+        log.info("A new block has been submitted to the blockchain!");
+        log.info("Attempting to add new incoming block: {}...", newBlock.toString());
         try {
             // Validate the incoming block against this blockchains last block before adding new block
             newBlock.isBlockValid(this.getLastBlock());

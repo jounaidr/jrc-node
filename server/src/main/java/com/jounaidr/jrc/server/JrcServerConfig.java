@@ -31,7 +31,7 @@ public class JrcServerConfig {
 
     @Bean
     public Peer peer() {
-        String peerUrl = "http://54.86.229.200:8080";
+        String peerUrl = "http://" + PEER_SOCKETS;
         return new Peer(blockchain, peerUrl);
     }
 }
