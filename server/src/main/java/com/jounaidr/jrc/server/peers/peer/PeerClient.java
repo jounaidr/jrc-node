@@ -1,7 +1,7 @@
 package com.jounaidr.jrc.server.peers.peer;
 
 import com.jounaidr.jrc.server.blockchain.Block;
-import com.jounaidr.jrc.server.peers.peer.helpers.JsonBlockResponseHelper;
+import com.jounaidr.jrc.server.peers.peer.util.JsonBlockResponseUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -37,7 +37,7 @@ public class PeerClient {
         JSONArray jsonResponse = new JSONArray(blockchainResponse.body().string());
 
         for (int i = 0; i < jsonResponse.length(); i++) {
-            chainResponse.add(JsonBlockResponseHelper.getBlockFromJsonObject(jsonResponse.getJSONObject(i)));
+            chainResponse.add(JsonBlockResponseUtil.getBlockFromJsonObject(jsonResponse.getJSONObject(i)));
         }
 
         return chainResponse;
@@ -52,7 +52,7 @@ public class PeerClient {
     public Block getPeerLastBlock() throws IOException, JSONException {
         Response blockchainLastBlockResponse = client.newCall(blockchainLastBlockRequest).execute();
 
-        return JsonBlockResponseHelper.getBlockFromJsonObject(new JSONObject(blockchainLastBlockResponse.body().string()));
+        return JsonBlockResponseUtil.getBlockFromJsonObject(new JSONObject(blockchainLastBlockResponse.body().string()));
     }
 
     public String getPeerHealth() throws IOException, JSONException {

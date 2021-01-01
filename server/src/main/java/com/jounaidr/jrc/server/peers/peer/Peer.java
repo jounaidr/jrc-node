@@ -1,8 +1,10 @@
 package com.jounaidr.jrc.server.peers.peer;
 
 import com.jounaidr.jrc.server.blockchain.Blockchain;
-import com.jounaidr.jrc.server.peers.peer.helpers.Status;
+import com.jounaidr.jrc.server.peers.peer.util.Status;
+import com.jounaidr.jrc.server.peers.peer.services.PollingService;
 
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -13,24 +15,17 @@ public class Peer {
     private String peerSocket;
     private Status peerStatus;
 
-    private final PeerThreadedPoller peerPoller;
+    private final PollingService peerPoller;
 
-    public Peer(Blockchain blockchain, String peerSocket) {
+    public Peer(Blockchain blockchain, ScheduledThreadPoolExecutor executor, String peerSocket) {
         this.peerSocket = peerSocket;
         this.peerStatus = Status.UNKNOWN;
 
-        this.peerPoller = new PeerThreadedPoller(blockchain, this);
-
-
-        this.startPeerPolling();
+        this.peerPoller = new PollingService(blockchain, executor, this);
     }
 
-    public void startPeerPolling(){
+    public void startPolling(){
         this.peerPoller.start();
-    }
-
-    public void stopPeerPolling(){
-        this.peerPoller.stop();
     }
 
     public String getPeerSocket() {

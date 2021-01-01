@@ -1,10 +1,10 @@
-package com.jounaidr.jrc.server.peers.peer.helpers;
+package com.jounaidr.jrc.server.peers.peer.util;
 
 import com.jounaidr.jrc.server.blockchain.Block;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
-public class JsonBlockResponseHelper {
+public class JsonBlockResponseUtil {
 
     public static Block getBlockFromJsonObject(JSONObject jsonBlock) throws JSONException {
         Block block = new Block(

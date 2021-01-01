@@ -1,34 +1,44 @@
-package com.jounaidr.jrc.server.peers.peer;
+package com.jounaidr.jrc.server.peers.peer.services;
 
 import com.jounaidr.jrc.server.blockchain.Block;
 import com.jounaidr.jrc.server.blockchain.Blockchain;
-import com.jounaidr.jrc.server.peers.peer.helpers.Status;
+import com.jounaidr.jrc.server.peers.peer.Peer;
+import com.jounaidr.jrc.server.peers.peer.PeerClient;
+import com.jounaidr.jrc.server.peers.peer.util.Status;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InvalidObjectException;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Slf4j
-public class PeerThreadedPoller implements Runnable{
+public class PollingService implements Runnable{
+    private static final long POLLING_FREQUENCY = 5000; //TODO: SET TO 15 secs when deploying only 1sec for testing
+
     private Blockchain blockchain;
+    private ScheduledThreadPoolExecutor executor;
 
     private Peer peer;
     private PeerClient peerClient;
 
-    private static final int POLLING_FREQUENCY = 1000; //TODO: SET TO 15 secs when deploying only 1sec for testing
-    private ScheduledExecutorService executor;
-
-    public PeerThreadedPoller(Blockchain blockchain, Peer peer) {
+    public PollingService(Blockchain blockchain, ScheduledThreadPoolExecutor executor, Peer peer) {
         this.blockchain = blockchain;
+        this.executor = executor;
 
         this.peer = peer;
         this.peerClient = new PeerClient(peer.getPeerSocket());
+    }
 
-        this.executor = Executors.newSingleThreadScheduledExecutor();
+    public void start() {
+        executor.scheduleAtFixedRate(this, this.getRandomInitialDelay(), POLLING_FREQUENCY, TimeUnit.MILLISECONDS);
+    }
+
+    private long getRandomInitialDelay(){
+        double delay = ThreadLocalRandom.current().nextDouble() * POLLING_FREQUENCY;
+
+        return Double.valueOf(Math.ceil(delay)).longValue();
     }
 
     @Override
@@ -78,7 +88,7 @@ public class PeerThreadedPoller implements Runnable{
                     log.debug("Peer [{}] is behind this node",peer.getPeerSocket());
                 }
             }
-        } catch (SocketTimeoutException e) {
+        } catch (SocketTimeoutException | ConnectException e) {
             if(peer.getPeerStatus() != Status.DOWN){
                 peer.setPeerStatus(Status.DOWN);
                 log.info("Could not poll the following peer: [{}]. Reason: {}. Setting peer status to DOWN", peer.getPeerSocket(), e.getMessage());
@@ -88,14 +98,5 @@ public class PeerThreadedPoller implements Runnable{
             //TODO: test around this, different exceptions, what happens if non block json is returned, what if different response code
             e.printStackTrace();
         }
-    }
-
-    public void start() {
-        //TODO: set initial delay to 15 secs for deploy only 50 for testing!!!!!
-        executor.scheduleAtFixedRate(this, 50, POLLING_FREQUENCY, TimeUnit.MILLISECONDS);
-    }
-
-    public void stop() {
-        executor.shutdown();
     }
 }
