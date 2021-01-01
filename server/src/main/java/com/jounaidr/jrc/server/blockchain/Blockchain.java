@@ -129,13 +129,13 @@ public class Blockchain {
      * @return List<Block> this blockchains chain
      */
     public List<Block> getChain() {
+        //Read lock whilst getting chain as many threads can read/write to this
         Lock readLock = rwLock.readLock();
         readLock.lock();
-        log.debug("Attempting to read chain...");
+
         try {
             return this.chain;
         } finally {
-            log.debug("Chain read successfully...");
             readLock.unlock();
         }
     }
@@ -147,13 +147,13 @@ public class Blockchain {
      * @param newChain incoming chain
      */
     private void setChain(List<Block> newChain) {
+        //Write lock whilst getting chain as many threads can read/write to this
         Lock writeLock = rwLock.writeLock();
         writeLock.lock();
-        log.debug("Attempting to replace chain...");
+
         try {
             this.chain = newChain;
         } finally {
-            log.debug("Chain replacement successful...");
             writeLock.unlock();
         }
     }

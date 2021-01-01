@@ -31,7 +31,8 @@ public class JrcServerConfig {
 
     @Bean
     public Peer peer() {
-        String peerUrl = "http://" + PEER_SOCKETS;
-        return new Peer(blockchain, peerUrl);
+        //TODO:PEERS CLASS NEEDS TO BE IMPLEMENTED FOR THIS
+        String peerSocket = PEER_SOCKETS;
+        return new Peer(blockchain, peerSocket);
     }
 }
