@@ -36,10 +36,16 @@ public class Blockchain {
      */
     public void addBlock(Block newBlock) throws InvalidObjectException {
         log.info("A new block has been submitted to the blockchain!");
+        // Check if the block is has already been added
+        if(newBlock.toString().equals(this.getLastBlock().toString())){
+            log.info("Block has already been added to the chain!");
+            return;
+        }
+
         log.info("Attempting to add new incoming block: {}...", newBlock.toString());
         try {
             // Validate the incoming block against this blockchains last block before adding new block
-            newBlock.isBlockValid(this.getLastBlock());
+            newBlock.validateBlock(this.getLastBlock());
             this.getChain().add(newBlock);
             log.info("...Block added successfully!");
         } catch (InvalidObjectException e) {
@@ -64,13 +70,9 @@ public class Blockchain {
             log.debug("Incoming blockchain is not longer than current blockchain...");
             return;
         }
-        try {
-            if(!newBlockchain.isChainValid()){
-                log.debug("Incoming blockchain is longer than current blockchain, but is not valid...");
-                return;
-            }
-        } catch (InvalidObjectException e) {
-            throw e;
+        if(!newBlockchain.isChainValid()){
+            log.debug("Incoming blockchain is longer than current blockchain, but is not valid...");
+            return;
         }
 
         this.setChain(newBlockchain.getChain());
@@ -95,7 +97,7 @@ public class Blockchain {
          for(int i=1; i < this.getChain().size(); i++){
              try {
                  //Verify each block is valid against the previous block
-                 this.getChain().get(i).isBlockValid(this.getChain().get(i-1));
+                 this.getChain().get(i).validateBlock(this.getChain().get(i-1));
              } catch (InvalidObjectException e) {
                  log.error("Chain is invalid, the {}th block in the chain is invalid.",i);
                  throw e;
@@ -118,8 +120,7 @@ public class Blockchain {
      */
     public Block getLastBlock() {
         log.debug("Attempting to retrieve last block in the blockchain: {}...", this.getChain().get(this.getChain().size() - 1));
-        Block lastBlock = this.getChain().get(this.getChain().size() - 1);
-        return lastBlock;
+        return this.getChain().get(this.getChain().size() - 1);
     }
 
     /**

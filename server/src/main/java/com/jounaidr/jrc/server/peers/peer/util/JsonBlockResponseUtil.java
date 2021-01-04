@@ -7,7 +7,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 public class JsonBlockResponseUtil {
 
     public static Block getBlockFromJsonObject(JSONObject jsonBlock) throws JSONException {
-        Block block = new Block(
+        return new Block(
                 jsonBlock.getString("hash"),
                 jsonBlock.getString("previousHash"),
                 jsonBlock.getString("data"),
@@ -16,7 +16,5 @@ public class JsonBlockResponseUtil {
                 jsonBlock.getString("difficulty"),
                 jsonBlock.getString("proofOfWork")
         );
-
-        return block;
     }
 }

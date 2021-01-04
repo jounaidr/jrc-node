@@ -41,7 +41,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Block'
+                $ref: '#/components/schemas/BlockModel'
 
   /blockchain/addblock:
     post:
@@ -64,7 +64,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Block'
+              $ref: '#/components/schemas/BlockModel'
         description: Block to be added
         required: true
 
@@ -80,6 +80,18 @@ paths:
               schema:
                 type: integer
 
+  /peers:
+    get:
+      summary: Get the nodes socket list
+      operationId: getSocketsList
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Peers'
+
 ################################################################################
 #                             Model Definitions                                #
 ################################################################################
@@ -88,9 +100,9 @@ components:
     Blockchain:
       type: array
       items:
-        $ref: '#/components/schemas/Block'
+        $ref: '#/components/schemas/BlockModel'
 
-    Block:
+    BlockModel:
       type: object
       properties:
         hash:
@@ -106,4 +118,17 @@ components:
         difficulty:
           type: string
         proofOfWork:
+          type: string
+
+    Peers:
+      type: array
+      items:
+        $ref: '#/components/schemas/PeerModel'
+
+    PeerModel:
+      type: object
+      properties:
+        peerSocket:
+          type: string
+        peerStatus:
           type: string

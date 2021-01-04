@@ -2,6 +2,7 @@ package com.jounaidr.jrc.server.peers.peer.services;
 
 import com.jounaidr.jrc.server.blockchain.Block;
 import com.jounaidr.jrc.server.blockchain.Blockchain;
+import com.jounaidr.jrc.server.peers.Peers;
 import com.jounaidr.jrc.server.peers.peer.Peer;
 import com.jounaidr.jrc.server.peers.peer.PeerClient;
 import com.jounaidr.jrc.server.peers.peer.util.Status;
@@ -17,17 +18,21 @@ import java.util.concurrent.*;
 public class PollingService implements Runnable{
     private static final long POLLING_FREQUENCY = 5000; //TODO: SET TO 15 secs when deploying only 1sec for testing
 
-    private Blockchain blockchain;
-    private ScheduledThreadPoolExecutor executor;
+    private final Blockchain blockchain;
+    private final ScheduledThreadPoolExecutor executor;
 
-    private Peer peer;
-    private PeerClient peerClient;
+    private final Peer peer;
+    private final Peers peers;
+    private final PeerClient peerClient;
 
-    public PollingService(Blockchain blockchain, ScheduledThreadPoolExecutor executor, Peer peer) {
+    private String cashedPeerSocketsList;
+
+    public PollingService(Blockchain blockchain, Peer peer, Peers peers) {
         this.blockchain = blockchain;
-        this.executor = executor;
+        this.executor = peers.getExecutor();
 
         this.peer = peer;
+        this.peers = peers;
         this.peerClient = new PeerClient(peer.getPeerSocket());
     }
 
@@ -56,6 +61,15 @@ public class PollingService implements Runnable{
             }
 
             if(peer.getPeerStatus() == Status.UP){
+                // Get the peers peer list
+                String peerSocketsList = peerClient.getHealthySocketsList();
+
+                if(!peerSocketsList.equals(cashedPeerSocketsList)){ // The peers peer list has changed, update this nodes peer list...
+                    log.info("New peers have been detected from the following peer: [{}] !",peer.getPeerSocket());
+                    peers.addSocketsList(peerSocketsList);
+                    this.cashedPeerSocketsList = peerSocketsList;
+                }
+
                 // Compare the peers blockchain size against this nodes blockchain
                 int chainSizeDiff = peerClient.getPeerBlockchainSize() - this.blockchain.getChain().size();
 

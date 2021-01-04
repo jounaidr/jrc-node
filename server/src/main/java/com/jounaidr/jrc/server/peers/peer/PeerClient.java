@@ -16,18 +16,24 @@ import java.util.concurrent.TimeUnit;
 public class PeerClient {
     private final OkHttpClient client;
 
-    private Request blockchainRequest;
-    private Request blockchainSizeRequest;
-    private Request blockchainLastBlockRequest;
-    private Request peerHealthRequest;
+    private final Request blockchainRequest;
+    private final Request blockchainSizeRequest;
+    private final Request blockchainLastBlockRequest;
+
+    private final Request peersRequest;
+
+    private final Request healthRequest;
 
     public PeerClient(String peerSocket) {
         this.client = new OkHttpClient.Builder().readTimeout(3, TimeUnit.SECONDS).build();
 
-        this.blockchainRequest = new Request.Builder().url(String.format("http://%s/blockchain/blockchain", peerSocket)).build();
+        this.blockchainRequest = new Request.Builder().url(String.format("http://%s/blockchain", peerSocket)).build();
         this.blockchainSizeRequest = new Request.Builder().url(String.format("http://%s/blockchain/size", peerSocket)).build();
         this.blockchainLastBlockRequest = new Request.Builder().url(String.format("http://%s/blockchain/lastblock", peerSocket)).build();
-        this.peerHealthRequest = new Request.Builder().url(String.format("http://%s/blockchain/actuator/health", peerSocket)).build();
+
+        this.peersRequest = new Request.Builder().url(String.format("http://%s/peers", peerSocket)).build();
+
+        this.healthRequest = new Request.Builder().url(String.format("http://%s/blockchain/actuator/health", peerSocket)).build();
     }
 
     public ArrayList<Block> getPeerBlockchain() throws IOException, JSONException {
@@ -55,8 +61,24 @@ public class PeerClient {
         return JsonBlockResponseUtil.getBlockFromJsonObject(new JSONObject(blockchainLastBlockResponse.body().string()));
     }
 
+    public String getHealthySocketsList() throws IOException, JSONException {
+        StringBuilder socketsListResponse = new StringBuilder();
+        //Only get the sockets with that have status 'UP'
+        Response peersResponse = client.newCall(peersRequest).execute();
+        JSONArray jsonResponse = new JSONArray(peersResponse.body().string());
+
+        for (int i = 0; i < jsonResponse.length(); i++) {
+            if(jsonResponse.getJSONObject(i).getString("peerStatus").equals("UP")){
+                socketsListResponse.append(jsonResponse.getJSONObject(i).getString("peerSocket"));
+                socketsListResponse.append(",");
+            }
+        }
+
+        return socketsListResponse.substring(0, socketsListResponse.length() - 1);
+    }
+
     public String getPeerHealth() throws IOException, JSONException {
-        Response peerHealthResponse = client.newCall(peerHealthRequest).execute();
+        Response peerHealthResponse = client.newCall(healthRequest).execute();
 
         return new JSONObject(peerHealthResponse.body().string()).getString("status");
     }

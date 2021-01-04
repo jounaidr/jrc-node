@@ -1,8 +1,8 @@
 package com.jounaidr.jrc.server.blockchain;
 
 import com.jounaidr.Cryptonight;
-import com.jounaidr.jrc.server.blockchain.helpers.BlockHelper;
-import com.jounaidr.jrc.server.blockchain.crypto.KeccakHashHelper;
+import com.jounaidr.jrc.server.blockchain.util.BlockUtil;
+import com.jounaidr.jrc.server.blockchain.util.KeccakHashUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InvalidObjectException;
@@ -107,19 +107,19 @@ public class Block {
             Cryptonight cryptonightPOW = new Cryptonight(proofOfWorkData);
             currentProofOfWork = cryptonightPOW.returnHash();
 
-        } while(!(this.difficulty.equals(String.valueOf(BlockHelper.getByteArrayLeadingZeros(currentProofOfWork))))); //Check if the currently calculated proof of work leading zeros meets the difficulty
+        } while(!(this.difficulty.equals(String.valueOf(BlockUtil.getByteArrayLeadingZeros(currentProofOfWork))))); //Check if the currently calculated proof of work leading zeros meets the difficulty
 
         log.info("Valid proof of work has been found with nonce: {}, and timestamp {} ! POW hash was found in: {} seconds...", currentNonce, this.timeStamp,
-                BlockHelper.calcBlockTimeDiff(this.timeStamp,previousBlock.getTimeStamp())); //TODO: this will go in miner server!
+                BlockUtil.calcBlockTimeDiff(this.timeStamp,previousBlock.getTimeStamp())); //TODO: this will go in miner server!
 
         this.setNonce(String.valueOf(currentNonce)); //Set the nonce value of the block to the previously calculated value
-        this.setProofOfWork(BlockHelper.getBinaryString(currentProofOfWork)); //Set the POW value of the block to the previously calculated value as binary string
+        this.setProofOfWork(BlockUtil.getBinaryString(currentProofOfWork)); //Set the POW value of the block to the previously calculated value as binary string
 
         this.setHash(this.generateHash()); //Now generate the blocks hash with all data
 
         try {
             // Validate the newly mined block
-            this.isBlockValid(previousBlock);
+            this.validateBlock(previousBlock);
         } catch (InvalidObjectException e) {
             e.printStackTrace();
         }
@@ -140,7 +140,7 @@ public class Block {
      */
     private void adjustDifficulty(Block previousBlock){
         int difficulty = Integer.parseInt(previousBlock.getDifficulty());
-        long diffSeconds = BlockHelper.calcBlockTimeDiff(this.timeStamp,previousBlock.getTimeStamp()); //Difference in seconds between the block currently being mined, and the previously mined block
+        long diffSeconds = BlockUtil.calcBlockTimeDiff(this.timeStamp,previousBlock.getTimeStamp()); //Difference in seconds between the block currently being mined, and the previously mined block
 
         if(diffSeconds > MINE_RATE){
             difficulty--; //Decrement difficulty if time taken is greater than MINE_RATE (120 seconds)
@@ -166,9 +166,8 @@ public class Block {
      */
     public String generateHash(){
         String message = this.previousHash + this.data + this.timeStamp + this.difficulty + this.nonce + this.proofOfWork;
-        KeccakHashHelper keccakHashHelper = new KeccakHashHelper(message);
 
-        return keccakHashHelper.returnHash();
+        return KeccakHashUtil.returnHash(message);
     }
 
     /**
@@ -182,7 +181,7 @@ public class Block {
         String proofOfWorkData = this.previousHash + this.data + this.timeStamp + this.difficulty + this.nonce;
         Cryptonight cryptonightValidator = new Cryptonight(proofOfWorkData);
 
-        String proofOfWorkBinaryString = BlockHelper.getBinaryString(cryptonightValidator.returnHash());
+        String proofOfWorkBinaryString = BlockUtil.getBinaryString(cryptonightValidator.returnHash());
 
         return this.proofOfWork.equals(proofOfWorkBinaryString);
     }
@@ -195,9 +194,8 @@ public class Block {
      * references the provided previousBlocks hash correctly
      *
      * @param previousBlock the previous block
-     * @return if the block is valid
      */
-    public Boolean isBlockValid(Block previousBlock) throws InvalidObjectException {
+    public void validateBlock(Block previousBlock) throws InvalidObjectException {
         // Validation checks against the supplied previous block
         if(!previousBlock.getHash().equals(previousBlock.generateHash())){
             throw new InvalidObjectException(String.format("Block validation failed, supplied previous block has an invalid hash. Supplied previous block hash: %s, should be: %s...", previousBlock.getHash(), previousBlock.generateHash()));
@@ -215,7 +213,6 @@ public class Block {
         if(!this.isProofOfWorkValid()){
             throw new InvalidObjectException("Block validation failed, this block has an incorrect proof of work...");
         }
-        return true;
     }
 
     /**

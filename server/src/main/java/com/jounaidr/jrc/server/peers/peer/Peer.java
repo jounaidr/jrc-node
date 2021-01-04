@@ -1,27 +1,27 @@
 package com.jounaidr.jrc.server.peers.peer;
 
 import com.jounaidr.jrc.server.blockchain.Blockchain;
+import com.jounaidr.jrc.server.peers.Peers;
 import com.jounaidr.jrc.server.peers.peer.util.Status;
 import com.jounaidr.jrc.server.peers.peer.services.PollingService;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Peer {
-    private ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
-    private String peerSocket;
+    private final String peerSocket;
     private Status peerStatus;
 
     private final PollingService peerPoller;
 
-    public Peer(Blockchain blockchain, ScheduledThreadPoolExecutor executor, String peerSocket) {
+    public Peer(Blockchain blockchain, Peers peers, String peerSocket) {
         this.peerSocket = peerSocket;
         this.peerStatus = Status.UNKNOWN;
 
-        this.peerPoller = new PollingService(blockchain, executor, this);
+        this.peerPoller = new PollingService(blockchain, this, peers);
     }
 
     public void startPolling(){
@@ -29,6 +29,7 @@ public class Peer {
     }
 
     public String getPeerSocket() {
+        //Value is set on initialisation and will not change so no locking required
         return this.peerSocket;
     }
 

@@ -1,8 +1,11 @@
-package com.jounaidr.jrc.server.api.implementation.helpers;
+package com.jounaidr.jrc.server.api.implementation.util;
 
-public class BlockModelHelper {
-    public static com.jounaidr.jrc.server.api.generated.model.Block getBlockAsModel(com.jounaidr.jrc.server.blockchain.Block block){
-        com.jounaidr.jrc.server.api.generated.model.Block blockModel = new com.jounaidr.jrc.server.api.generated.model.Block();
+import com.jounaidr.jrc.server.api.generated.model.BlockModel;
+import com.jounaidr.jrc.server.blockchain.Block;
+
+public class BlockModelUtil {
+    public static BlockModel getBlockAsModel(Block block){
+        BlockModel blockModel = new BlockModel();
 
         blockModel.setHash(block.getHash());
         blockModel.setPreviousHash(block.getPreviousHash());
@@ -15,7 +18,7 @@ public class BlockModelHelper {
         return blockModel;
     }
 
-    public static com.jounaidr.jrc.server.blockchain.Block getBlockFromModel(com.jounaidr.jrc.server.api.generated.model.Block blockModel){
+    public static Block getBlockFromModel(BlockModel blockModel){
         return new com.jounaidr.jrc.server.blockchain.Block(
                 blockModel.getHash(),
                 blockModel.getPreviousHash(),
