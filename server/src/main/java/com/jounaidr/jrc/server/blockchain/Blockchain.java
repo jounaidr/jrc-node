@@ -1,6 +1,8 @@
 package com.jounaidr.jrc.server.blockchain;
 
+import com.jounaidr.jrc.server.peers.Peers;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.InvalidObjectException;
 import java.util.List;
@@ -10,6 +12,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Slf4j
 public class Blockchain {
+    @Autowired
+    Peers peers;
+
     private List<Block> chain;
     private ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
@@ -35,10 +40,10 @@ public class Blockchain {
      * @param newBlock the new incoming block
      */
     public void addBlock(Block newBlock) throws InvalidObjectException {
-        log.info("A new block has been submitted to the blockchain!");
+        log.info("A new block has been submitted to the blockchain!"); //TODO: debug
         // Check if the block is has already been added
         if(newBlock.toString().equals(this.getLastBlock().toString())){
-            log.info("Block has already been added to the chain!");
+            log.info("Block has already been added to the chain!"); //TODO: debug
             return;
         }
 
@@ -47,6 +52,8 @@ public class Blockchain {
             // Validate the incoming block against this blockchains last block before adding new block
             newBlock.validateBlock(this.getLastBlock());
             this.getChain().add(newBlock);
+            // Then broadcast the new block to the nodes peers
+            peers.broadcastBlockToPeers(newBlock);
             log.info("...Block added successfully!");
         } catch (InvalidObjectException e) {
             log.error("New incoming block is invalid and can't be added to the blockchain. Reason: {}", e.getMessage());
