@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>server-api</artifactId>
+    <artifactId>server-api-generator</artifactId>
     <description>openAPI generated endpoints</description>
 
     <properties>

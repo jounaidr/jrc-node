@@ -57,7 +57,7 @@
         <!-- networking -->
         <dependency>
             <groupId>com.jounaidr.jrc</groupId>
-            <artifactId>server-api</artifactId>
+            <artifactId>server-api-generator</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
