@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.InvalidObjectException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -23,7 +24,7 @@ class JrcServerConfigTest {
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 
     @Test
-    public void testBlockchainConfigInitialisesBlockchain(){
+    public void testBlockchainConfigInitialisesBlockchain() throws InvalidObjectException {
         //Given
         JrcServerConfig testConfig = new JrcServerConfig();
         Block genesisBlock = new Block().genesis();
@@ -47,7 +48,7 @@ class JrcServerConfigTest {
 
         assertEquals("failure - Original blockchains chain is incorrect length", 1, testChain.getChain().size());
 
-        assertEquals("failure - incorrect logging message displayed","Initiating blockchain with genesis block...", logsList.get(0).getMessage());
-        assertEquals("failure - incorrect logging message displayed","Blockchain has been initialised with genesis block: {} ...", logsList.get(1).getMessage());
+        assertEquals("failure - incorrect logging message displayed","Attempting to initialise a blockchain with the following chain array: {}...", logsList.get(0).getMessage());
+        assertEquals("failure - incorrect logging message displayed","A Fresh blockchain has been initialised with genesis block...", logsList.get(1).getMessage());
     }
 }

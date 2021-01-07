@@ -122,6 +122,7 @@ public class Block {
             this.validateBlock(previousBlock);
         } catch (InvalidObjectException e) {
             e.printStackTrace();
+            //TODO: throw?????
         }
 
         return this;

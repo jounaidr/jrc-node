@@ -83,6 +83,7 @@ public class Blockchain {
         }
 
         this.setChain(newBlockchain.getChain());
+        log.info("Chain replacement successful...");
     }
 
     /**
@@ -106,13 +107,13 @@ public class Blockchain {
                  //Verify each block is valid against the previous block
                  this.getChain().get(i).validateBlock(this.getChain().get(i-1));
              } catch (InvalidObjectException e) {
-                 log.error("Chain is invalid, the {}th block in the chain is invalid.",i);
+                 log.error("Chain is invalid, the block {} in the chain is invalid.",i);
                  throw e;
              }
             //Verify each block changes the difficulty by no more than 1
             int changeInDifficulty = Math.abs(Integer.parseInt(this.getChain().get(i-1).getDifficulty()) - Integer.parseInt(this.getChain().get(i).getDifficulty()));
             if(changeInDifficulty > 1){
-                log.error("Chain is invalid, the {}th block in the chain has a difficulty jump greater than 1. Difficulty changed by: {}...",i,changeInDifficulty);
+                log.error("Chain is invalid, the block {} in the chain has a difficulty jump greater than 1. Difficulty changed by: {}...",i,changeInDifficulty);
                 return false;
             }
         }
