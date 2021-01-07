@@ -6,7 +6,7 @@
 
 	<modules>
 		<module>server</module>
-		<module>server-api</module>
+		<module>server-api-generator</module>
 	</modules>
 
 	<parent>

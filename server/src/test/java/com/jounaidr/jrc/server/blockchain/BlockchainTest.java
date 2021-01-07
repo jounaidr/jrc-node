@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,14 +37,17 @@ class BlockchainTest {
     }
 
     @Test
-    public void testBlockchainAddsBlockCorrectly(){
+    public void testBlockchainAddsBlockCorrectly() throws InvalidObjectException {
         //Given
         Blockchain testChain = new Blockchain(new ArrayList<>());
 
         //When
-        testChain.addBlock("Hi, im the second block");
-        testChain.addBlock("Sup second block im the third block");
-        testChain.addBlock("And im the fourth block =)");
+        Block secondBlock = new Block().mineBlock(testChain.getLastBlock(), "Hi, im the second block");
+        testChain.getChain().add(secondBlock);
+        Block thirdBlock = new Block().mineBlock(testChain.getLastBlock(), "Sup second block im the third block");
+        testChain.getChain().add(thirdBlock);
+        Block forthBlock = new Block().mineBlock(testChain.getLastBlock(), "And im the fourth block =)");
+        testChain.getChain().add(forthBlock);
 
         //Then
         //Check that each block in the chain references the previous block hash correctly
@@ -59,14 +63,17 @@ class BlockchainTest {
     }
 
     @Test
-    public void testBlockchainValidationValidChain(){
+    public void testBlockchainValidationValidChain() throws InvalidObjectException {
         //Given
         Blockchain validChain = new Blockchain(new ArrayList<>());
 
         //When
-        validChain.addBlock("Hi, im the second block");
-        validChain.addBlock("Sup second block im the third block");
-        validChain.addBlock("And im the fourth block =)");
+        Block secondBlock = new Block().mineBlock(validChain.getLastBlock(), "Hi, im the second block");
+        validChain.getChain().add(secondBlock);
+        Block thirdBlock = new Block().mineBlock(validChain.getLastBlock(), "Sup second block im the third block");
+        validChain.getChain().add(thirdBlock);
+        Block forthBlock = new Block().mineBlock(validChain.getLastBlock(), "And im the fourth block =)");
+        validChain.getChain().add(forthBlock);
 
         listAppender.start();
         logger.addAppender(listAppender); //start log capture...
@@ -81,7 +88,7 @@ class BlockchainTest {
     }
 
     @Test
-    public void testBlockchainValidationInvalidGenesisBlock(){
+    public void testBlockchainValidationInvalidGenesisBlock() throws InvalidObjectException {
         //Given
         Block genesisBlock = new Block().genesis();
 
@@ -124,53 +131,59 @@ class BlockchainTest {
         listAppender.start();
         logger.addAppender(listAppender); //start log capture...
 
-        Boolean isChainValid = evilBlockchain.isChainValid();
+        Exception blockValidationException = assertThrows(InvalidObjectException.class, () -> {
+            //Catch the invalid block exception
+            evilBlockchain.isChainValid();
+        });
 
         //Then
         List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
 
-        assertFalse("failure - blockchain with invalid block order has verified as valid, big ouf...", isChainValid);
-        assertEquals("failure - incorrect logging message displayed","Chain is invalid, the {}th block in the chain has previousHash value {}, however the hash of the previous block is {}...", logsList.get(0).getMessage());
+        //check exception message
+        assertTrue(blockValidationException.getMessage().contains("Block validation failed, this block doesn't reference the previous blocks hash correctly. Reference to previous hash:"));
+        //check log message
+        assertEquals("Chain is invalid, the block {} in the chain is invalid.", logsList.get(0).getMessage());
     }
 
+//    VALIDATION OF BLOCK POW DONE IN Block().validateBlock()... THEREFORE THIS TEST IS NO LONGER NECESSARY
+//    @Test
+//    public void testBlockchainValidationInvalidProofOfWork() throws InvalidObjectException {
+//        //Given
+//        List<Block> invalidPreviousHashChain = new ArrayList<>(); //create a dummy chain as a new arraylist
+//
+//        Block genesisBlock = new Block().genesis();
+//        Block validSecondBlock = new Block().mineBlock(genesisBlock,"secondBlockData"); //A valid second block
+//
+//        //Generate a block based on the previously generated valid second block, but set proof of work to an invalid binary string
+//        Block evilSecondBlock = new Block(validSecondBlock.getHash(), validSecondBlock.getPreviousHash(), validSecondBlock.getData(), validSecondBlock.getTimeStamp(), validSecondBlock.getNonce(), validSecondBlock.getDifficulty(), "1000101");
+//
+//        invalidPreviousHashChain.add(genesisBlock);
+//        invalidPreviousHashChain.add(evilSecondBlock); //Add the invalid block to the dummy chain
+//
+//        Blockchain evilBlockchain = new Blockchain(invalidPreviousHashChain); //Initialise the evil blockchain with the dummy chain
+//
+//        //When
+//        listAppender.start();
+//        logger.addAppender(listAppender); //start log capture...
+//
+//        Boolean isChainValid = evilBlockchain.isChainValid();
+//
+//        //Then
+//        List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
+//
+//        assertFalse("failure - blockchain that has a block with invalid proof of work has verified as valid, big ouf...", isChainValid);
+//        assertEquals("failure - incorrect logging message displayed","Chain is invalid, the {}th block in the chain has an invalid proof of work...", logsList.get(0).getMessage());
+//    }
+
     @Test
-    public void testBlockchainValidationInvalidProofOfWork(){
-        //Given
-        List<Block> invalidPreviousHashChain = new ArrayList<>(); //create a dummy chain as a new arraylist
-
-        Block genesisBlock = new Block().genesis();
-        Block validSecondBlock = new Block().mineBlock(genesisBlock,"secondBlockData"); //A valid second block
-
-        //Generate a block based on the previously generated valid second block, but set proof of work to an invalid binary string
-        Block evilSecondBlock = new Block(validSecondBlock.getHash(), validSecondBlock.getPreviousHash(), validSecondBlock.getData(), validSecondBlock.getTimeStamp(), validSecondBlock.getNonce(), validSecondBlock.getDifficulty(), "1000101");
-
-        invalidPreviousHashChain.add(genesisBlock);
-        invalidPreviousHashChain.add(evilSecondBlock); //Add the invalid block to the dummy chain
-
-        Blockchain evilBlockchain = new Blockchain(invalidPreviousHashChain); //Initialise the evil blockchain with the dummy chain
-
-        //When
-        listAppender.start();
-        logger.addAppender(listAppender); //start log capture...
-
-        Boolean isChainValid = evilBlockchain.isChainValid();
-
-        //Then
-        List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
-
-        assertFalse("failure - blockchain that has a block with invalid proof of work has verified as valid, big ouf...", isChainValid);
-        assertEquals("failure - incorrect logging message displayed","Chain is invalid, the {}th block in the chain has an invalid proof of work...", logsList.get(0).getMessage());
-    }
-
-    @Test
-    public void testBlockchainValidationInvalidDifficulty(){
+    public void testBlockchainValidationInvalidDifficulty() throws InvalidObjectException {
         //Given
         List<Block> invalidPreviousHashChain = new ArrayList<>(); //create a dummy chain as a new arraylist
 
         Block genesisBlock = new Block().genesis();
 
         //Generate a block based on the previously generated valid second block, but set jump the difficulty more than 1
-        Block evilSecondBlock = new Block("This Block Jumps Difficulty", "6034f08ebe09268c00b3144673bc0a1ce787c2e992545e3ec276b38cbebd57b6", "secondBlockData", "2020-11-14T23:55:10.208261300Z", "4", "69", "1111001110010001000010000010001100000000001111101111010000000011001000100110011010001000001010100111011110111000001001011101000110000111010001110000101001010010000101011110110011011111110101111000100101011011110011110101011101001010000011100100011111010000");
+        Block evilSecondBlock = new Block("fb6bf0dd384664830a642467b184c2473fa6b21251d9c45b333e9f55505294c7", "89b76d274d54b62e56aea14299ea6feb282e5ba573cd378a42ecdfb00a772c22", "secondBlockData", "2020-11-14T23:55:10.208261300Z", "4", "69", "1111110001001111000001100000100101100111011000111000110111110100110001010100011111101001010010110000101011110101011111101111101100111110000001010110001101111111101110100101111100011110000000110001100100110110010010101100011111110010100101010100101000011101");
 
         invalidPreviousHashChain.add(genesisBlock);
         invalidPreviousHashChain.add(evilSecondBlock); //Add the invalid block to the dummy chain
@@ -187,20 +200,24 @@ class BlockchainTest {
         List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
 
         assertFalse("failure - blockchain that has a difficulty jump has verified as valid, big ouf...", isChainValid);
-        assertEquals("failure - incorrect logging message displayed","Chain is invalid, the {}th block in the chain has a difficulty jump greater than 1. Difficulty changed by: {}...", logsList.get(0).getMessage());
+        assertEquals("failure - incorrect logging message displayed","Chain is invalid, the block {} in the chain has a difficulty jump greater than 1. Difficulty changed by: {}...", logsList.get(0).getMessage());
     }
 
     @Test
-    public void testValidLongerIncomingBlockchainReplacesCurrentChain(){
+    public void testValidLongerIncomingBlockchainReplacesCurrentChain() throws InvalidObjectException {
         //Given
         Blockchain smolChain = new Blockchain(new ArrayList<>());
         Blockchain bigChain = new Blockchain(new ArrayList<>());
 
-        smolChain.addBlock("im the only block in this chain =(");
+        Block smolChainBlock = new Block().mineBlock(smolChain.getLastBlock(), "im the only block in this chain =(");
+        smolChain.getChain().add(smolChainBlock);
 
-        bigChain.addBlock("Hi, im the second block");
-        bigChain.addBlock("Sup second block im the third block");
-        bigChain.addBlock("And im the fourth block =)");
+        Block secondBlock = new Block().mineBlock(bigChain.getLastBlock(), "Hi, im the second block");
+        bigChain.getChain().add(secondBlock);
+        Block thirdBlock = new Block().mineBlock(bigChain.getLastBlock(), "Sup second block im the third block");
+        bigChain.getChain().add(thirdBlock);
+        Block forthBlock = new Block().mineBlock(bigChain.getLastBlock(), "And im the fourth block =)");
+        bigChain.getChain().add(forthBlock);
 
         //When
         listAppender.start();
@@ -214,22 +231,25 @@ class BlockchainTest {
         assertEquals("failure - Original blockchains chain was not replaced by the longer incoming chain", bigChain.getChain(), smolChain.getChain());
         assertEquals("failure - Original blockchains chain is incorrect length after replacement", 4, smolChain.getChain().size());
 
-        assertEquals("failure - incorrect logging message displayed","Blockchain is valid...", logsList.get(2).getMessage());
-        assertEquals("failure - incorrect logging message displayed","Attempting to replace chain...", logsList.get(5).getMessage());
-        assertEquals("failure - incorrect logging message displayed","Chain replacement successful...", logsList.get(6).getMessage());
+        assertEquals("failure - incorrect logging message displayed","Blockchain is valid...", logsList.get(1).getMessage());
+        assertEquals("failure - incorrect logging message displayed","Chain replacement successful...", logsList.get(2).getMessage());
     }
 
     @Test
-    public void testValidShorterIncomingBlockchainDoesntReplacesCurrentChain(){
+    public void testValidShorterIncomingBlockchainDoesntReplacesCurrentChain() throws InvalidObjectException {
         //Given
         Blockchain smolChain = new Blockchain(new ArrayList<>());
         Blockchain bigChain = new Blockchain(new ArrayList<>());
 
-        smolChain.addBlock("im the only block in this chain =(");
+        Block smolChainBlock = new Block().mineBlock(smolChain.getLastBlock(), "im the only block in this chain =(");
+        smolChain.getChain().add(smolChainBlock);
 
-        bigChain.addBlock("Hi, im the second block");
-        bigChain.addBlock("Sup second block im the third block");
-        bigChain.addBlock("And im the fourth block =)");
+        Block secondBlock = new Block().mineBlock(bigChain.getLastBlock(), "Hi, im the second block");
+        bigChain.getChain().add(secondBlock);
+        Block thirdBlock = new Block().mineBlock(bigChain.getLastBlock(), "Sup second block im the third block");
+        bigChain.getChain().add(thirdBlock);
+        Block forthBlock = new Block().mineBlock(bigChain.getLastBlock(), "And im the fourth block =)");
+        bigChain.getChain().add(forthBlock);
 
         //When
         listAppender.start();
@@ -241,14 +261,15 @@ class BlockchainTest {
         List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
 
         assertNotEquals("failure - Original blockchains chain was replaced by smaller chain, big ouf", bigChain.getChain(), smolChain.getChain());
-        assertEquals("failure - incorrect logging message displayed","Incoming blockchain is not longer than current blockchain...", logsList.get(2).getMessage());
+        assertEquals("failure - incorrect logging message displayed","Incoming blockchain is not longer than current blockchain...", logsList.get(1).getMessage());
     }
 
     @Test
     public void testInvalidLongerIncomingBlockchainDoesntReplacesCurrentChain(){
         //Given
         Blockchain smolChain = new Blockchain(new ArrayList<>());
-        smolChain.addBlock("im the only block in this chain =(");
+        Block smolChainBlock = new Block().mineBlock(smolChain.getLastBlock(), "im the only block in this chain =(");
+        smolChain.getChain().add(smolChainBlock);
 
         List<Block> invalidPreviousHashChain = new ArrayList<>(); //create a dummy chain as a new arraylist
 
@@ -267,14 +288,19 @@ class BlockchainTest {
         listAppender.start();
         logger.addAppender(listAppender); //start log capture...
 
-        smolChain.replaceChain(evilBigBlockchain);
+        Exception blockValidationException = assertThrows(InvalidObjectException.class, () -> {
+            //Catch the invalid block exception
+            smolChain.replaceChain(evilBigBlockchain);;
+        });
 
         //Then
         List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
 
         assertNotEquals("failure - Original blockchains chain was replaced by invalid chain, big ouf", evilBigBlockchain.getChain(), smolChain.getChain());
         assertEquals("failure - Original blockchains chain is incorrect length", 2, smolChain.getChain().size());
-        assertEquals("failure - incorrect logging message displayed","Chain is invalid, the {}th block in the chain has previousHash value {}, however the hash of the previous block is {}...", logsList.get(2).getMessage());
-        assertEquals("failure - incorrect logging message displayed","Incoming blockchain is longer than current blockchain, but is not valid...", logsList.get(3).getMessage());
+        //check exception message
+        assertTrue(blockValidationException.getMessage().contains("Block validation failed, this block doesn't reference the previous blocks hash correctly. Reference to previous hash:"));
+        //check log messages
+        assertEquals("Chain is invalid, the block {} in the chain is invalid.", logsList.get(1).getMessage());
     }
 }

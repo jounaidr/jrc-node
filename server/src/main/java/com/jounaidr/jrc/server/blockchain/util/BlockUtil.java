@@ -1,8 +1,8 @@
-package com.jounaidr.jrc.server.blockchain.helpers;
+package com.jounaidr.jrc.server.blockchain.util;
 
 import java.time.Instant;
 
-public class BlockHelper {
+public class BlockUtil {
 
     /**
      * Return the number of leading zeros

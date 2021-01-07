@@ -150,8 +150,8 @@
                                 ${project.basedir}/src/main/resources/openapi.yaml
                             </inputSpec>
                             <generatorName>spring</generatorName>
-                            <apiPackage>com.jounaidr.jrc.server.api</apiPackage>
-                            <modelPackage>com.jounaidr.jrc.server.model</modelPackage>
+                            <apiPackage>com.jounaidr.jrc.server.api.generated</apiPackage>
+                            <modelPackage>com.jounaidr.jrc.server.api.generated.model</modelPackage>
                             <supportingFilesToGenerate>
                                 ApiUtil.java
                             </supportingFilesToGenerate>

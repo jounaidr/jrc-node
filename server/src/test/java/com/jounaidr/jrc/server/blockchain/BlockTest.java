@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import com.jounaidr.jrc.server.blockchain.helpers.BlockHelper;
+import com.jounaidr.jrc.server.blockchain.util.BlockUtil;
 import com.jparams.verifier.tostring.NameStyle;
 import com.jparams.verifier.tostring.ToStringVerifier;
 import org.junit.Assert;
@@ -37,9 +37,9 @@ class BlockTest {
         String expectedTimeStamp = "2020-11-07T19:40:57.585581100Z";
         String expectedNonce = "dummydata";
         String expectedDifficulty = "3";
-        String expectedProofOfWork = "dummyPOW";
+        String expectedProofOfWork = "1101011101110100010010011001011010101001000010001011100011111011000110111000010010111111000100000000000011100011110011000000001101011000011110011010111110001000101010111000000100001100010101001100101011001110011110010000011110001011001010000001010011011000";
 
-        String expectedHash = "6034f08ebe09268c00b3144673bc0a1ce787c2e992545e3ec276b38cbebd57b6";
+        String expectedHash = "89b76d274d54b62e56aea14299ea6feb282e5ba573cd378a42ecdfb00a772c22";
 
         Block genesisBlock = new Block();
 
@@ -60,7 +60,7 @@ class BlockTest {
     @Test //Test that .mineBlock() correctly sets previousHash value of a newly mined block to the hash value of the previous block, and that the block data is correct
     public void testMinedBlockIsGeneratedCorrectly(){
         //Given
-        String genesisHash = "6034f08ebe09268c00b3144673bc0a1ce787c2e992545e3ec276b38cbebd57b6";
+        String genesisHash = "89b76d274d54b62e56aea14299ea6feb282e5ba573cd378a42ecdfb00a772c22";
 
         Block genesisBlock = new Block();
         genesisBlock.genesis();
@@ -94,8 +94,8 @@ class BlockTest {
         secondBlock.mineBlock(genesisBlock,"Difficulty should reduce");
         thirdBlock.mineBlock(secondBlock,"Difficulty should increase");
 
-        long secondBlockDiff = BlockHelper.calcBlockTimeDiff(secondBlock.getTimeStamp(),genesisBlock.getTimeStamp()); //Time taken between genesis block was mined, and second block was mined
-        long thirdBlockDiff = BlockHelper.calcBlockTimeDiff(thirdBlock.getTimeStamp(),secondBlock.getTimeStamp()); //Time taken between second block was mined, and third block was mined
+        long secondBlockDiff = BlockUtil.calcBlockTimeDiff(secondBlock.getTimeStamp(),genesisBlock.getTimeStamp()); //Time taken between genesis block was mined, and second block was mined
+        long thirdBlockDiff = BlockUtil.calcBlockTimeDiff(thirdBlock.getTimeStamp(),secondBlock.getTimeStamp()); //Time taken between second block was mined, and third block was mined
 
         //Then
         assertEquals("failure - difficulty of the genesis block is incorrect", "3", genesisBlock.getDifficulty());
