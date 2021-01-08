@@ -1,10 +1,8 @@
 package com.jounaidr.jrc.server.blockchain;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import com.jounaidr.jrc.server.blockchain.util.BlockUtil;
 import com.jparams.verifier.tostring.NameStyle;
@@ -14,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.meanbean.test.BeanTester;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.io.InvalidObjectException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 class BlockTest {
@@ -134,5 +134,85 @@ class BlockTest {
         //Then
         Assert.assertTrue("Valid proof of work is being verified as invalid", shouldBeValid);
         Assert.assertFalse("Invalid proof of work is being verified as valid", shouldBeInvalid);
+    }
+
+    @Test
+    public void testBlockValidationPreviousBlockInvalidHash(){
+        //Given
+        Block prevGenesisBlock = new Block().genesis();
+        Block invalidBlock = new Block("I","am","an","evil","block","whos","invalid");
+
+        //When
+        Exception blockValidationException = assertThrows(InvalidObjectException.class, () -> {
+            //Catch the invalid block exception
+            prevGenesisBlock.validateBlock(invalidBlock);
+        });
+
+        //Then
+        assertTrue(blockValidationException.getMessage().contains("Block validation failed, supplied previous block has an invalid hash. Supplied previous block hash:"));
+    }
+
+    @Test
+    public void testBlockValidationPreviousBlockInvalidPOW(){
+        //Given
+        Block prevGenesisBlock = new Block().genesis();
+        Block invalidProofOfWorkBlock = new Block("48bb2616fe1332d9113a2a4c2813e5db7b37613093e8aabfe4261b44ed52a963", "89b76d274d54b62e56aea14299ea6feb282e5ba573cd378a42ecdfb00a772c22", "test", "2020-11-07T19:40:57.585581100Z", "69", "3", "invalid");
+
+        //When
+        Exception blockValidationException = assertThrows(InvalidObjectException.class, () -> {
+            //Catch the invalid block exception
+            prevGenesisBlock.validateBlock(invalidProofOfWorkBlock);
+        });
+
+        //Then
+        assertTrue(blockValidationException.getMessage().contains("Block validation failed, supplied previous block has an invalid proof of work..."));
+    }
+
+    @Test
+    public void testBlockValidationInvalidHash(){
+        //Given
+        Block prevGenesisBlock = new Block().genesis();
+        Block invalidBlock = new Block("I","89b76d274d54b62e56aea14299ea6feb282e5ba573cd378a42ecdfb00a772c22","an","evil","block","whos","invalid");
+
+        //When
+        Exception blockValidationException = assertThrows(InvalidObjectException.class, () -> {
+            //Catch the invalid block exception
+            invalidBlock.validateBlock(prevGenesisBlock);
+        });
+
+        //Then
+        assertTrue(blockValidationException.getMessage().contains("Block validation failed, this block has an incorrect hash value. This blocks hash:"));
+    }
+
+    @Test
+    public void testBlockValidationInvalidPreviousHash(){
+        //Given
+        Block prevGenesisBlock = new Block().genesis();
+        Block invalidBlock = new Block("I","am","an","evil","block","whos","invalid");
+
+        //When
+        Exception blockValidationException = assertThrows(InvalidObjectException.class, () -> {
+            //Catch the invalid block exception
+            invalidBlock.validateBlock(prevGenesisBlock);
+        });
+
+        //Then
+        assertTrue(blockValidationException.getMessage().contains("Block validation failed, this block doesn't reference the previous blocks hash correctly. Reference to previous hash:"));
+    }
+
+    @Test
+    public void testBlockValidationInvalidPOW(){
+        //Given
+        Block prevGenesisBlock = new Block().genesis();
+        Block invalidProofOfWorkBlock = new Block("48bb2616fe1332d9113a2a4c2813e5db7b37613093e8aabfe4261b44ed52a963", "89b76d274d54b62e56aea14299ea6feb282e5ba573cd378a42ecdfb00a772c22", "test", "2020-11-07T19:40:57.585581100Z", "69", "3", "invalid");
+
+        //When
+        Exception blockValidationException = assertThrows(InvalidObjectException.class, () -> {
+            //Catch the invalid block exception
+            invalidProofOfWorkBlock.validateBlock(prevGenesisBlock);
+        });
+
+        //Then
+        assertTrue(blockValidationException.getMessage().contains("Block validation failed, this block has an incorrect proof of work..."));
     }
 }

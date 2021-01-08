@@ -214,6 +214,8 @@ public class Block {
         if(!this.isProofOfWorkValid()){
             throw new InvalidObjectException("Block validation failed, this block has an incorrect proof of work...");
         }
+        //TODO: need extra validation checks:
+        //TODO: "for example that the ints are ints, that pow is the correct length and only binary, that leading 0's on pow equeal difficulty, timestamp is of correct format, etc."
     }
 
     /**
