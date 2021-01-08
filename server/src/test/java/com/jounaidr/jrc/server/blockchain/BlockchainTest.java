@@ -74,7 +74,7 @@ class BlockchainTest {
 
         try {
             testChain.addBlock(secondBlock);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO: Could replace with ReflectionTestUtils, see: https://www.baeldung.com/spring-reflection-test-utils
             //Since there is no peers bean, the peers.broadcastBlockToPeers() method call will fail,
             //Catch this and fail silently as its not relevant to this unit test and is tested during integration testing
         }
@@ -99,7 +99,7 @@ class BlockchainTest {
 
         try {
             testChain.addBlock(secondBlock);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO: Could replace with ReflectionTestUtils, see: https://www.baeldung.com/spring-reflection-test-utils
             //Since there is no peers bean, the peers.broadcastBlockToPeers() method call will fail,
             //Catch this and fail silently as its not relevant to this unit test and is tested during integration testing
         }
@@ -126,7 +126,7 @@ class BlockchainTest {
                 //Catch the invalid block exception
                 testChain.addBlock(invalidBlock);
             });
-        } catch (NullPointerException e) {
+        } catch (NullPointerException e) { //TODO: Could replace with ReflectionTestUtils, see: https://www.baeldung.com/spring-reflection-test-utils
             //Since there is no peers bean, the peers.broadcastBlockToPeers() method call will fail,
             //Catch this and fail silently as its not relevant to this unit test and is tested during integration testing
         }

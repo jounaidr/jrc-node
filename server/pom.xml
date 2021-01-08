@@ -141,7 +141,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <!--TEST EXCLUDED FOR CI (possibly issue caused by JNI memory leak?
+                        <!--TEST EXCLUDED FOR CI (possibly issue caused by JNI memory leak?)
                         TODO: include test when actual deployment server setup-->
                         <exclude>**/CryptonightTest.java</exclude>
                     </excludes>

@@ -37,7 +37,7 @@ class MinerateTest {
 
             try {
                 testChain.addBlock(nextBlock); //Add a block with random data
-            } catch (NullPointerException e) {
+            } catch (NullPointerException e) { //TODO: Could replace with ReflectionTestUtils, see: https://www.baeldung.com/spring-reflection-test-utils
                 //Since there is no peers bean, the peers.broadcastBlockToPeers() method call will fail, catch this and fail silently as its not relevant to this test
             }
 
