@@ -63,6 +63,84 @@ class BlockchainTest {
     }
 
     @Test
+    public void testAddBlockMethodValidBlock() throws InvalidObjectException {
+        //Given
+        Blockchain testChain = new Blockchain(new ArrayList<>());
+        Block secondBlock = new Block().mineBlock(testChain.getLastBlock(), "Hi, im the second block");
+
+        //When
+        listAppender.start();
+        logger.addAppender(listAppender); //start log capture...
+
+        try {
+            testChain.addBlock(secondBlock);
+        } catch (NullPointerException e) {
+            //Since there is no peers bean, the peers.broadcastBlockToPeers() method call will fail,
+            //Catch this and fail silently as its not relevant to this unit test and is tested during integration testing
+        }
+
+        //Then
+        List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
+
+        assertEquals("failure - last block in the chain isnt the newly added block...", secondBlock.toString(), testChain.getLastBlock().toString());
+        assertEquals("failure - incorrect logging message displayed","...Block added successfully!", logsList.get(2).getMessage());
+    }
+
+    @Test
+    public void testAddBlockDuplicateBlock() throws InvalidObjectException {
+        //Given
+        Blockchain testChain = new Blockchain(new ArrayList<>());
+        Block secondBlock = new Block().mineBlock(testChain.getLastBlock(), "Hi, im the second block");
+        testChain.getChain().add(secondBlock); //Add the second block to the chain directly
+
+        //When
+        listAppender.start();
+        logger.addAppender(listAppender); //start log capture...
+
+        try {
+            testChain.addBlock(secondBlock);
+        } catch (NullPointerException e) {
+            //Since there is no peers bean, the peers.broadcastBlockToPeers() method call will fail,
+            //Catch this and fail silently as its not relevant to this unit test and is tested during integration testing
+        }
+
+        //Then
+        List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
+
+        assertEquals("failure - incorrect logging message displayed","Block has already been added to the chain!", logsList.get(1).getMessage());
+    }
+
+    @Test
+    public void testAddBlockMethodInvalidBlock() {
+        //Given
+        Blockchain testChain = new Blockchain(new ArrayList<>());
+        Block invalidBlock = new Block("I","am","an","evil","block","whos","invalid");
+
+        //When
+        listAppender.start();
+        logger.addAppender(listAppender); //start log capture...
+
+        Exception blockValidationException = null;
+        try {
+             blockValidationException = assertThrows(InvalidObjectException.class, () -> {
+                //Catch the invalid block exception
+                testChain.addBlock(invalidBlock);
+            });
+        } catch (NullPointerException e) {
+            //Since there is no peers bean, the peers.broadcastBlockToPeers() method call will fail,
+            //Catch this and fail silently as its not relevant to this unit test and is tested during integration testing
+        }
+
+        //Then
+        List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
+
+        //check exception message
+        assertTrue(blockValidationException.getMessage().contains("Block validation failed, this block doesn't reference the previous blocks hash correctly. Reference to previous hash:"));
+        //check log message
+        assertEquals("failure - incorrect logging message displayed","New incoming block is invalid and can't be added to the blockchain. Reason: {}", logsList.get(2).getMessage());
+    }
+
+    @Test
     public void testBlockchainValidationValidChain() throws InvalidObjectException {
         //Given
         Blockchain validChain = new Blockchain(new ArrayList<>());
@@ -96,13 +174,13 @@ class BlockchainTest {
         Block badBoyBlock = new Block().mineBlock(genesisBlock,"Im a verrrrry bad block whos going to do bad things >:)");
         invalidGenesisChain.add(badBoyBlock); //add a block that isn't the genesis block to the dummy chain
 
-        Blockchain evilBlockchain = new Blockchain(invalidGenesisChain); //Initial the evil blockchain with the dummy chain
+        Blockchain evilBlockchain = new Blockchain(invalidGenesisChain); //Initialise the evil blockchain with the dummy chain
 
         //When
         listAppender.start();
         logger.addAppender(listAppender); //start log capture...
 
-        Boolean isChainValid = evilBlockchain.isChainValid();
+        boolean isChainValid = evilBlockchain.isChainValid();
 
         //Then
         List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
@@ -174,6 +252,32 @@ class BlockchainTest {
 //        assertFalse("failure - blockchain that has a block with invalid proof of work has verified as valid, big ouf...", isChainValid);
 //        assertEquals("failure - incorrect logging message displayed","Chain is invalid, the {}th block in the chain has an invalid proof of work...", logsList.get(0).getMessage());
 //    }
+
+    @Test
+    public void testReplaceChainInvalidGenesisBlock() throws InvalidObjectException {
+        //Given
+        Blockchain testChain = new Blockchain(new ArrayList<>());
+
+        Block genesisBlock = new Block().genesis();
+
+        List<Block> invalidGenesisChain = new ArrayList<>(); //create a dummy chain as a new arraylist
+        Block badBoyBlock = new Block().mineBlock(genesisBlock,"Im a verrrrry bad block whos going to do bad things >:)");
+        invalidGenesisChain.add(badBoyBlock); //add a block that isn't the genesis block to the dummy chain
+
+        Blockchain evilBlockchain = new Blockchain(invalidGenesisChain); //Initialise the evil blockchain with the dummy chain
+        evilBlockchain.getChain().add(genesisBlock); //Add the genesis block as second block in the evil chain
+
+        //When
+        listAppender.start();
+        logger.addAppender(listAppender); //start log capture...
+
+        testChain.replaceChain(evilBlockchain);
+
+        //Then
+        List<ILoggingEvent> logsList = listAppender.list; //...store captured logs
+
+        assertEquals("failure - incorrect logging message displayed","Chain is invalid, first block in the chain is not genesis block...", logsList.get(1).getMessage());
+    }
 
     @Test
     public void testBlockchainValidationInvalidDifficulty() throws InvalidObjectException {

@@ -52,9 +52,9 @@ public class Blockchain {
             // Validate the incoming block against this blockchains last block before adding new block
             newBlock.validateBlock(this.getLastBlock());
             this.getChain().add(newBlock);
+            log.info("...Block added successfully!");
             // Then broadcast the new block to the nodes peers
             peers.broadcastBlockToPeers(newBlock);
-            log.info("...Block added successfully!");
         } catch (InvalidObjectException e) {
             log.error("New incoming block is invalid and can't be added to the blockchain. Reason: {}", e.getMessage());
             throw e;
@@ -127,7 +127,6 @@ public class Blockchain {
      * @return lastBlock the last block
      */
     public Block getLastBlock() {
-        log.debug("Attempting to retrieve last block in the blockchain: {}...", this.getChain().get(this.getChain().size() - 1));
         return this.getChain().get(this.getChain().size() - 1);
     }
 
