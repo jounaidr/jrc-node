@@ -13,6 +13,7 @@ import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: Try catch all methods like the addBlock method but with generic Exception, and respond with it (see addBlock())
 public class BlockchainApiDelegateImpl implements BlockchainApiDelegate {
     @Autowired
     private Blockchain blockchain; //The blockchain bean instance for this node, injected through spring
@@ -30,6 +31,18 @@ public class BlockchainApiDelegateImpl implements BlockchainApiDelegate {
         for(Block block : blockchain.getChain()){
             response.add(BlockModelUtil.getBlockAsModel(block));
         }
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Gets this nodes blockchain size and returns it
+     *
+     * @return the integer blockchain size as a response entity with status code 200
+     */
+    @Override
+    public ResponseEntity<Integer> getBlockchainSize() {
+        Integer response = blockchain.getChain().size();
 
         return ResponseEntity.ok(response);
     }
@@ -62,17 +75,5 @@ public class BlockchainApiDelegateImpl implements BlockchainApiDelegate {
         }
 
         return ResponseEntity.ok("Block added successfully!");
-    }
-
-    /**
-     * Gets this nodes blockchain size and returns it
-     *
-     * @return the integer blockchain size as a response entity with status code 200
-     */
-    @Override
-    public ResponseEntity<Integer> getBlockchainSize() {
-        Integer response = blockchain.getChain().size();
-
-        return ResponseEntity.ok(response);
     }
 }
