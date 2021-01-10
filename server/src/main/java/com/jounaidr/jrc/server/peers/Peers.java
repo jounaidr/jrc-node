@@ -80,7 +80,7 @@ public class Peers {
     private void addPeer(String peerSocket){
         //First do max peers and node socket checks as these are less expensive,
         //Than do valid socket and known peer checks...
-        if(this.getPeerList().size() > MAX_PEERS){
+        if(this.getPeerList().size() >= MAX_PEERS){
             log.error("Unable to add new peer [{}] as max peer size of {} has been reached", peerSocket, MAX_PEERS);
             return;
         }
