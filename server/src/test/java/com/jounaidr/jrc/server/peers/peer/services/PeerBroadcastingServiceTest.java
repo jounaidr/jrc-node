@@ -34,10 +34,10 @@ class PeerBroadcastingServiceTest {
     Peer mockPeer;
 
     @Mock
-    PeerClient mockPeerClient;
+    ScheduledThreadPoolExecutor mockPeersExecutor;
 
     @Mock
-    ScheduledThreadPoolExecutor mockPeersExecutor;
+    PeerClient mockPeerClient;
 
     @BeforeEach
     void setUp() {
@@ -52,7 +52,7 @@ class PeerBroadcastingServiceTest {
     @Test
     public void testBroadcastBlock(){
         //Given
-        Block testBlock = new Block("this","is","a","test","block","lol","yeet");;
+        Block testBlock = new Block("this","is","a","test","block","lol","yeet");
 
         //When
         testPeerBroadcastingService.broadcastBlock(testBlock);
