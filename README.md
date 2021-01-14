@@ -11,6 +11,9 @@ algorithm, and developed using the Java Spring framework.
     - [Block Hashing](#block-hashing)
     - [Proof Of Work](#proof-of-work)
     - [Block Validation](#block-validation)
+    - [P2P Networking](#p2p-networking)
+         - [API](#api)
+         - [Interfacing Peers](#interfacing-peers)   
 * [Testing](#testing)
     - [Unit Tests](#unit-tests)
     - [Minerate Integration Test](#minerate-integration-test)
@@ -80,6 +83,38 @@ if(!this.isProofOfWorkValid()){
     throw new InvalidObjectException("Block validation failed, this block has an incorrect proof of work...");
 }
 ```
+
+### P2P Networking
+Each node contains an initial list of peers (which is set on node initialization through the `peers.sockets` property) for which communication occurs through HTTP RESTful endpoints. The peer list is then subsequently updated automatically when new peers are discovered in the cluster.
+The maximum numbers of peers the node can communicate with is set using the `peers.max` property.
+
+#### API
+The server API is generated using the [OpenApi Generator](https://github.com/OpenAPITools/openapi-generator) with spring integration.
+The API specification is located in the server-api-generator module, called [openapi.yaml](https://github.com/jounaidr/jrc-node/blob/develop/server-api-generator/src/main/resources/openapi.yaml).
+New endpoints can be defined following the format outlined in the spec, for example the `/blockchain/size` endpoint is defined as follows:
+```yaml
+/blockchain/size:
+  get:
+    summary: Get the blockchain length
+    operationId: getBlockchainSize
+    responses:
+      200:
+        description: successful operation
+        content:
+          application/json:
+            schema:
+              type: integer
+```
+Running `mvn install` on the server-api-generator or root modules will generate the relevant API classes and Model classes to be used by spring.
+All generated code will be placed in the following package: `com.jounaidr.jrc.server.api.generated...`
+
+Within the generated classes, there will be an `...ApiDelegate` interface for each top-level endpoint defined, for example the /blockchain/... endpoints are implemented in the [BlockchainApiDelegateImpl.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/api/implementation/BlockchainApiDelegateImpl.java) class which implements the generated class. 
+Each `...ApiDelegateImpl` must be defined as a bean within [JrcServerConfig.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/JrcServerConfig.java).
+
+Click [here](NEED TO IMPLEMENT) for the documentation on the currently implemented endpoints.
+
+#### Interfacing Peers
+TODO
 
 ## Testing
 ### Unit Tests
