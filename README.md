@@ -10,7 +10,7 @@ algorithm, and developed using the Java Spring framework.
     - [Genesis](#genesis)
     - [Block Hashing](#block-hashing)
     - [Proof Of Work](#proof-of-work)
-    - [Chain Validation/Replacement](#chain-validationreplacement)
+    - [Block Validation](#block-validation)
 * [Testing](#testing)
     - [Unit Tests](#unit-tests)
     - [Minerate Integration Test](#minerate-integration-test)
@@ -35,7 +35,7 @@ private static final String GENESIS_DATA = "dummydata";
 private static final String GENESIS_TIME_STAMP = "2020-11-07T19:40:57.585581100Z";
 private static final String GENESIS_NONCE = "dummydata";
 private static final String GENESIS_DIFFICULTY = "3";
-private static final String GENESIS_PROOF_OF_WORK = "dummyPOW";
+private static final String GENESIS_PROOF_OF_WORK = "1101011101110100010010011001011010101001000010001011100011111011000110111000010010111111000100000000000011100011110011000000001101011000011110011010111110001000101010111000000100001100010101001100101011001110011110010000011110001011001010000001010011011000";
 ```
 Note: this data will be changed upon deployment
 
@@ -58,51 +58,34 @@ The component is integrated during the [.mineBlock() method in Block.java](https
 
 I am also working on a java native implementation to potentially replace the JNI component, for which current progress can be found in these repos: [keccak-java-speedtest](https://github.com/jounaidr/keccak-java-speedtest), [JCryptoNight](https://github.com/jounaidr/JCryptoNight).
 
-### Chain Validation/Replacement
-In order to validate incoming chains, [Blockchain.java](https://github.com/jounaidr/jrc-node/blob/master/src/main/java/com/jounaidr/jrc/node/blockchain/Blockchain.java)
-uses the following method:
+### Block validation
+In order to validate blocks, [Block.java](https://github.com/jounaidr/jrc-node/blob/master/src/main/java/com/jounaidr/jrc/node/blockchain/Block.java)
+uses the following method, that throws an `InvalidObjectException` on invalid blocks:
 ```java
-public boolean isChainValid(){
-    if(!(this.chain.get(0).toString()).equals(new Block().genesis().toString())){
-        log.error("Chain is invalid, first block in the chain is not genesis block...");
-        return false; //Verify first block in chain is genesis block
-    }
-
-     for(int i=1; i < this.chain.size(); i++){
-        if(!(this.chain.get(i).getPreviousHash()).equals(this.chain.get(i-1).getHash())){
-            log.error("Chain is invalid, the {}th block in the chain has previousHash value {}, however the hash of the previous block is {}...",i,this.chain.get(i).getPreviousHash(),this.chain.get(i-1).getHash());
-            return false; //Verify each block in the chain references previous hash value correctly
-        }
-        if(!this.chain.get(i).isProofOfWorkValid()){
-            log.error("Chain is invalid, the {}th block in the chain has an invalid proof of work...",i);
-            return false; //Verify each block in the chain has valid proof of work
-        }
-        int changeInDifficulty = Math.abs(Integer.parseInt(this.chain.get(i-1).getDifficulty()) - Integer.parseInt(this.chain.get(i).getDifficulty()));
-        if(changeInDifficulty > 1){
-            log.error("Chain is invalid, the {}th block in the chain has a difficulty jump greater than 1. Difficulty changed by: {}...",i,changeInDifficulty);
-            return false; //Verify each block changes the difficulty by no more than 1
-        }
-    }
-    log.debug("Blockchain is valid...");
-    return true;
+// Validation checks against the supplied previous block
+if(!previousBlock.getHash().equals(previousBlock.generateHash())){
+    throw new InvalidObjectException(String.format("Block validation failed, supplied previous block has an invalid hash. Supplied previous block hash: %s, should be: %s...", previousBlock.getHash(), previousBlock.generateHash()));
 }
-```
-
-Chain replacement implements [ReentrantReadWriteLock](https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/locks/ReentrantReadWriteLock.html) 
-for concurrency:
-```java
-writeLock.lock();
-try {
-    this.chain = newChain;
-} finally {
-    writeLock.unlock();
+if(!previousBlock.isProofOfWorkValid()){
+    throw new InvalidObjectException("Block validation failed, supplied previous block has an invalid proof of work...");
+}
+// Validation checks for this block
+if(!this.getPreviousHash().equals(previousBlock.getHash())){
+    throw new InvalidObjectException(String.format("Block validation failed, this block doesn't reference the previous blocks hash correctly. Reference to previous hash: %s, supplied previous blocks hash: %s...", this.getPreviousHash(), previousBlock.getHash()));
+}
+if(!this.getHash().equals(this.generateHash())){
+    throw new InvalidObjectException(String.format("Block validation failed, this block has an incorrect hash value. This blocks hash: %s, should be: %s...", this.getHash(), this.generateHash()));
+}
+if(!this.isProofOfWorkValid()){
+    throw new InvalidObjectException("Block validation failed, this block has an incorrect proof of work...");
 }
 ```
 
 ## Testing
 ### Unit Tests
 Each class has an associated unit test class which can be found [here](https://github.com/jounaidr/jrc-node/tree/master/src/test/java/com/jounaidr/jrc/node).
-100% line coverage as of 16/11/2020
+* ~~100% line coverage as of 16/11/2020~~
+* 98% line coverage as of 14/01/2021
 
 ### Minerate Integration Test
 Inorder to test that the difficulty is adjusted correctly, a basic [mine rate integration test](https://github.com/jounaidr/jrc-node/blob/develop/src/test-integration/java/com/jounaidr/jrc/node/MinerateTest.java) was created.
