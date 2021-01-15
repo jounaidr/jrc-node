@@ -114,7 +114,31 @@ Each `...ApiDelegateImpl` must be defined as a bean within [JrcServerConfig.java
 Click [here](NEED TO IMPLEMENT) for the documentation on the currently implemented endpoints.
 
 #### Interfacing Peers
-TODO
+Each node runs the service bean, [Peers.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/Peers.java), which contains a list of [Peer.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/peer/Peer.java) objects that are able to interface with the different endpoints for the associated peer.
+The [OkHttp](https://square.github.io/okhttp/) client package is used to handle the peer requests, which is wrapped within the [PeerClient.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/peer/PeerClient.java) class, that contains helper methods to handle and return the relevant data from the response objects.  
+
+The [Peers](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/Peers.java) service bean initialises with a [ScheduledThreadPoolExecutor](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ScheduledThreadPoolExecutor.html) that increases its thread pool size by one for each [Peer](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/peer/Peer.java).
+The executor is used to run Peer services, for which there are currently two, the [PeerBroadcastingService](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/peer/services/PeerBroadcastingService.java), and the [PeerPollingService](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/peer/services/PeerPollingService.java).
+Using a pooled thread executor allows for peers to be polled, and to be broadcast to simultaneously, whilst also being efficient as threads are held onto and not constantly being created.
+Since the `peers.max` can be set by the user, the executor's pool size could increase to an amount that might start to affect system performance, therefore the user is warned on initialisation as follows:
+```java
+if(maxPeers > Runtime.getRuntime().availableProcessors()){
+    log.warn("It is recommended to set the max peers to less than {} for your system, performance may be impacted...", Runtime.getRuntime().availableProcessors());
+}
+```
+The integer returned by `Runtime.getRuntime().availableProcessors()` details the number of logical processors available on the system, 
+for which the optimal number of threads can be found using the following formula: `Number of threads = Number of Available Cores * Target CPU utilization * (1 + Wait time / Service time)`
+(more detail on this [here](https://engineering.zalando.com/posts/2019/04/how-to-set-an-ideal-thread-pool-size.html)).
+Until performance if fully tested to calculate the formulas variables, currently only a warning is displayed if the amount peers exceeds the amount of logical cores available.
+
+The [PeerPollingService](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/peer/services/PeerPollingService.java) run method script order is as follows:
+* First the peer's health endpoint (/actuator/health) is requested, and the local status of the peer is updated accordingly in its [Peer.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/peer/Peer.java) object.
+* The peer's socketlist endpoint (/peers) is then checked to see if the peer has discovered any new peers itself, for which the node will then add to its own peer list
+* The peer's blockchain size is then retrieved (/blockchain/size) and depending its difference with the node's blockchain size, the following happens:
+    - If there is no difference, the nodes are insync (and do nothing)
+    - If the difference is 1, the peer has the latest block, for which the node will request and validate it
+    - If the difference is greater than 1, the nodes blockchain is potentially out of sync with the network and will attempt to re-synchronise
+    - If the difference is less than 1, then the peer is out of sync with the network (and do nothing)
 
 ## Testing
 ### Unit Tests
