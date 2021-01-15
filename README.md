@@ -134,7 +134,7 @@ Until performance if fully tested to calculate the formulas variables, currently
 The [PeerPollingService](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/peer/services/PeerPollingService.java) run method script order is as follows:
 * First the peer's health endpoint (/actuator/health) is requested, and the local status of the peer is updated accordingly in its [Peer.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/peer/Peer.java) object.
 * The peer's socketlist endpoint (/peers) is then checked to see if the peer has discovered any new peers itself, for which the node will then add to its own peer list
-* The peer's blockchain size is then retrieved (/blockchain/size) and depending its difference with the node's blockchain size, the following happens:
+* The peer's blockchain size is then retrieved (/blockchain/size) and depending on its difference with the node's blockchain size, the following happens:
     - If there is no difference, the nodes are insync (and do nothing)
     - If the difference is 1, the peer has the latest block, for which the node will request and validate it
     - If the difference is greater than 1, the nodes blockchain is potentially out of sync with the network and will attempt to re-synchronise
