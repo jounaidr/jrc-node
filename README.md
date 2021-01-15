@@ -111,7 +111,7 @@ All generated code will be placed in the following package: `com.jounaidr.jrc.se
 Within the generated classes, there will be an `...ApiDelegate` interface for each top-level endpoint defined, for example the /blockchain/... endpoints are implemented in the [BlockchainApiDelegateImpl.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/api/implementation/BlockchainApiDelegateImpl.java) class which implements the generated class. 
 Each `...ApiDelegateImpl` must be defined as a bean within [JrcServerConfig.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/JrcServerConfig.java).
 
-Click [here](NEED TO IMPLEMENT) for the documentation on the currently implemented endpoints.
+Click [here]()(Currently unimplemented) for the documentation on the currently implemented endpoints.
 
 #### Interfacing Peers
 Each node runs the service bean, [Peers.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/Peers.java), which contains a list of [Peer.java](https://github.com/jounaidr/jrc-node/blob/develop/server/src/main/java/com/jounaidr/jrc/server/peers/peer/Peer.java) objects that are able to interface with the different endpoints for the associated peer.
