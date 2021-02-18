@@ -43,7 +43,7 @@ public class PeerClient {
 
         this.peersGetRequest = new Request.Builder().url(String.format("http://%s/peers", peerSocket)).build();
 
-        this.healthGetRequest = new Request.Builder().url(String.format("http://%s/blockchain/actuator/health", peerSocket)).build();
+        this.healthGetRequest = new Request.Builder().url(String.format("http://%s/actuator/health", peerSocket)).build();
     }
 
     /**
