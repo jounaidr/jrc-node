@@ -1,6 +1,8 @@
 package com.jounaidr.jrc.server.peers.peer;
 
 import com.jounaidr.jrc.server.blockchain.Block;
+import com.jounaidr.jrc.server.blockchain.Blockchain;
+import com.jounaidr.jrc.server.peers.Peers;
 import com.jounaidr.jrc.server.peers.peer.services.PeerBroadcastingService;
 import com.jounaidr.jrc.server.peers.peer.util.Status;
 import com.jounaidr.jrc.server.peers.peer.services.PeerPollingService;
@@ -26,13 +28,13 @@ public class Peer {
      * @param peerSocket    the socket to initialise the Peer with
      * @param peersExecutor the peers thread pool executor
      */
-    public Peer(String peerSocket, ScheduledThreadPoolExecutor peersExecutor) {
+    public Peer(String peerSocket, ScheduledThreadPoolExecutor peersExecutor, Blockchain blockchain, Peers peers) {
         this.PEER_SOCKET = peerSocket; //The peers socket, value will not change
         this.peerStatus = Status.UNKNOWN; //peer status is unknown until first polling cycle
 
         //Initialise PollingService and BroadcastingService runnable for this peer
         //Using the peers pool thread executor which will have one thread for each peer available
-        this.peerPoller = new PeerPollingService(this, peersExecutor);
+        this.peerPoller = new PeerPollingService(this, peersExecutor, blockchain, peers);
         this.peerBroadcaster = new PeerBroadcastingService(this, peersExecutor);
     }
 

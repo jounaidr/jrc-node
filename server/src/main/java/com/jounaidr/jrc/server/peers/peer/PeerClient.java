@@ -158,6 +158,12 @@ public class PeerClient {
         }
 
         //Remove last char from string before return as it will be a comma...
-        return socketsListResponse.substring(0, socketsListResponse.length() - 1);
+        //TODO: THIS IS A QUICK FIX FOR THE DEMO, DO A PROPPER FIX!!!!!!!!
+        if(!(socketsListResponse.toString().equals(""))){
+            return socketsListResponse.substring(0, socketsListResponse.length() - 1);
+        }
+        else{
+            return "";
+        }
     }
 }

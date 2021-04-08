@@ -1,9 +1,13 @@
 package com.jounaidr.jrc.server.peers;
 
 import com.jounaidr.jrc.server.blockchain.Block;
+import com.jounaidr.jrc.server.blockchain.Blockchain;
 import com.jounaidr.jrc.server.peers.peer.Peer;
 import org.apache.commons.lang3.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -14,6 +18,8 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class Peers {
+    private Blockchain blockchain;
+
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     private final String NODE_SOCKET;
@@ -33,7 +39,9 @@ public class Peers {
      * @param maxPeers    the maximum peers for the system
      * @param socketsList initial list of peer sockets from properties
      */
-    public Peers(String nodeSocket, int maxPeers, String socketsList) {
+    public Peers(String nodeSocket, int maxPeers, String socketsList, @Lazy Blockchain blockchain) {
+        this.blockchain = blockchain;
+
         this.NODE_SOCKET = nodeSocket; //This nodes socket
         this.MAX_PEERS = maxPeers; //Max number of peers from properties
 
@@ -103,7 +111,7 @@ public class Peers {
 
         //Instantiate a new Peer object for the peerSocket and pass it the pool thread executor
         //Then start polling the peer
-        this.getPeerList().add(new Peer(peerSocket, peersExecutor));
+        this.getPeerList().add(new Peer(peerSocket, peersExecutor, blockchain, this));
         log.debug("Starting polling with new peer [{}] ...", peerSocket);
         this.getPeerList().get(this.getPeerList().size() - 1).startPolling();
     }

@@ -21,7 +21,6 @@ import java.util.concurrent.*;
 public class PeerPollingService implements Runnable{
     @Autowired
     private Blockchain blockchain; //The blockchain bean instance for this node, injected through spring
-
     @Autowired
     private Peers peers; //The peers bean instance for this node, injected through spring
 
@@ -40,7 +39,10 @@ public class PeerPollingService implements Runnable{
      * @param peer          the peer that this polling service will poll
      * @param peersExecutor the the peers thread pool executor
      */
-    public PeerPollingService(Peer peer, ScheduledThreadPoolExecutor peersExecutor) {
+    public PeerPollingService(Peer peer, ScheduledThreadPoolExecutor peersExecutor, Blockchain blockchain, Peers peers) {
+        this.blockchain = blockchain;
+        this.peers = peers;
+
         this.peer = peer;
         this.peerClient = new PeerClient(peer.getPeerSocket()); //Instantiate a new peer client from the peers socket
 

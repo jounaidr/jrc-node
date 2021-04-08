@@ -4,9 +4,12 @@ import com.jounaidr.jrc.server.api.implementation.BlockchainApiDelegateImpl;
 import com.jounaidr.jrc.server.api.implementation.PeersApiDelegateImpl;
 import com.jounaidr.jrc.server.blockchain.Blockchain;
 import com.jounaidr.jrc.server.peers.Peers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 
 import java.util.ArrayList;
 
@@ -21,6 +24,9 @@ public class JrcServerConfig {
     @Value("${peers.sockets}")
     private String PEERS_SOCKETS;
 
+    @Autowired
+    Blockchain blockchain;
+
     @Bean
     public Blockchain blockchain(){
         // Initialise an empty blockchain instance for this node
@@ -34,9 +40,10 @@ public class JrcServerConfig {
     }
 
     @Bean
+    @DependsOn({"blockchain"})
     public Peers peers() {
         // Initialise the peers for this node
-        return new Peers(NODE_SOCKET, PEERS_MAX, PEERS_SOCKETS);
+        return new Peers(NODE_SOCKET, PEERS_MAX, PEERS_SOCKETS, blockchain);
     }
 
     @Bean
