@@ -1,6 +1,6 @@
 # jrc-node
 
-JRC aims to be a simple and secure cryptocurrency network implementing the Cryptonight proof of work 
+JRC aims to be a simple and secure blockchain network implementing the Cryptonight proof of work 
 algorithm, and developed using the Java Spring framework.
 
 ---
