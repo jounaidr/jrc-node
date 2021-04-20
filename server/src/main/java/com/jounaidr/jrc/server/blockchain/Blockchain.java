@@ -34,6 +34,9 @@ public class Blockchain {
             log.info("A Fresh blockchain has been initialised with genesis block...");
             log.debug("Blockchain initialised with the following genesis block: {} ...", this.getLastBlock().toString());
         }
+
+        Miner miner = new Miner(this);
+        miner.start();
     }
 
     /**
