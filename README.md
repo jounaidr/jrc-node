@@ -40,7 +40,6 @@ private static final String GENESIS_NONCE = "dummydata";
 private static final String GENESIS_DIFFICULTY = "3";
 private static final String GENESIS_PROOF_OF_WORK = "1101011101110100010010011001011010101001000010001011100011111011000110111000010010111111000100000000000011100011110011000000001101011000011110011010111110001000101010111000000100001100010101001100101011001110011110010000011110001011001010000001010011011000";
 ```
-Note: this data will be changed upon deployment
 
 ### Block Hashing
 Each block's hash is generated using the [Keccak-256](https://keccak.team/keccak_specs_summary.html) algorithm, for which the implementation can be found
@@ -91,6 +90,9 @@ The maximum numbers of peers the node can communicate with is set using the `pee
 #### API
 The server API is generated using the [OpenApi Generator](https://github.com/OpenAPITools/openapi-generator) with spring integration.
 The API specification is located in the server-api-generator module, called [openapi.yaml](https://github.com/jounaidr/jrc-node/blob/develop/server-api-generator/src/main/resources/openapi.yaml).
+
+The hosted Swagger documentation can be found at: https://jounaidr.github.io/jrc-node-API-docs/
+
 New endpoints can be defined following the format outlined in the spec, for example the `/blockchain/size` endpoint is defined as follows:
 ```yaml
 /blockchain/size:
