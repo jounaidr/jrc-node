@@ -53,7 +53,7 @@ Current component dependency:
 <dependency>
     <groupId>com.jounaidr</groupId>
     <artifactId>CryptoNightJNI</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 The component is integrated during the [.mineBlock() method in Block.java](https://github.com/jounaidr/jrc-node/blob/fceecdc550a1f10776949fda1bad1514cef27791/src/main/java/com/jounaidr/jrc/node/blockchain/Block.java#L104-L107). More information on this component used can be found in this repo: [CryptoNightJNI](https://github.com/jounaidr/CryptoNightJNI) 
@@ -141,6 +141,12 @@ The [PeerPollingService](https://github.com/jounaidr/jrc-node/blob/develop/serve
     - If the difference is 1, the peer has the latest block, for which the node will request and validate it
     - If the difference is greater than 1, the nodes blockchain is potentially out of sync with the network and will attempt to re-synchronise
     - If the difference is less than 1, then the peer is out of sync with the network (and do nothing)
+
+The following is a basic squence diagram providing an overview of the polling service:
+
+<p align="center" width="100%">
+    <img width="50%" src="https://github.com/jounaidr/jrc-node/blob/develop/docs/resources/peer_polling_service_sequence.png"> 
+</p>
 
 ## Testing
 ### Unit Tests
