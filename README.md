@@ -145,7 +145,7 @@ The [PeerPollingService](https://github.com/jounaidr/jrc-node/blob/develop/serve
 The following is a basic squence diagram providing an overview of the polling service:
 
 <p align="center" width="100%">
-    <img width="50%" src="https://github.com/jounaidr/jrc-node/blob/develop/docs/resources/peer_polling_service_sequence.png"> 
+    <img width="70%" src="https://github.com/jounaidr/jrc-node/blob/develop/docs/resources/peer_polling_service_sequence.png"> 
 </p>
 
 ## Testing
